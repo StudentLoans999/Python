@@ -5,8 +5,6 @@ For this project, I created a bot for Discord and gave it some features like:
 - [Action 1](#Action-1)
 - [Action 2](#Action-2)
   
---------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 ***
 ## Summary
 **Make sure to install Python first, in the Windows Store**
