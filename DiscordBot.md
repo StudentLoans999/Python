@@ -1,4 +1,4 @@
-For this project, I created a bot for Discord and gave it some features like:
+For this project, I created a bot for Discord for users to interact on the server with
 
 ## Table of Contents
 - [Summary](#Summary)
