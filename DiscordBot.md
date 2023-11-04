@@ -1,4 +1,4 @@
-For this project, I created a bot for Discord for users to interact on the server with
+For this project, I created a bot for Discord for users to interact on the server with, by following this guide: https://builtin.com/software-engineering-perspectives/discord-bot-python
 
 ## Table of Contents
 - [Summary](#Summary)
@@ -7,19 +7,19 @@ For this project, I created a bot for Discord for users to interact on the serve
   
 ***
 ## Summary
-**Make sure to install Python first, in the Windows Store**
+Action 1 - Installed Python, PIP, and then discord.py to get access to Discord's API
+
+Action 2 - 
 ***
 
 ## Action 1 
-R
+Make sure to install Python first, in the Windows Store
 ***
 ## Action 2
 R
 ***
 
 References:
-https://builtin.com/software-engineering-perspectives/discord-bot-python
-
 https://www.liquidweb.com/kb/install-pip-windows/
 
 
