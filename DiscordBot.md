@@ -1,4 +1,4 @@
-![image](https://github.com/StudentLoans999/Python/assets/77641113/30d062c8-236b-4827-8a0a-6dc64441261b)For this project, I created a bot for Discord for users to interact on the server with, by following this guide: 
+For this project, I created a bot for Discord for users to interact on the server with, by following this guide: 
 
 https://builtin.com/software-engineering-perspectives/discord-bot-python
 
@@ -10,7 +10,7 @@ https://builtin.com/software-engineering-perspectives/discord-bot-python
 - [Action 4](#Action-4)
 - [Action 5](#Action-5)
 - [Action 6](#Action-6)
-- [Additional Information](#Additional=Information)
+- [Helpful Information](#Additional=Information)
   
 ***
 ## Summary
@@ -26,6 +26,8 @@ Action 5 - Gave the Bot functionality by using a Python file I wrote
 
 Action 6 - Added custom custom features for the Bot like: Direct Messaging, Event Listeners, and Input Commands
 
+Helpful Information - Resources used and steps taken to optimize and/or fix the Bot
+
 ***
 
 ## Action 1 
@@ -40,7 +42,7 @@ Also, create a Python Virtual Environment `python -m venv C:\Users\david\Desktop
 Install pip : (https://www.liquidweb.com/kb/install-pip-windows/)
 
 Install discord `pip install discord` and `pip install discord.py`
-![image](https://github.com/StudentLoans999/Python/assets/77641113/d03e263e-5c34-4d7a-8370-6ace2e547e55)
+![image](https://github.com/StudentLoans999/Python/assets/77641113/30d062c8-236b-4827-8a0a-6dc64441261b)
 
 Then continue following the guide
 ***
@@ -61,13 +63,13 @@ After following the video, I continued following the guide which pretty much ove
 ## Action 6
 H
 ***
-Helpful information:
+Helpful Information:
 
 https://realpython.com/how-to-make-a-discord-bot-python/#interacting-with-discord-apis
 
 https://discordpy.readthedocs.io/en/stable/ext/commands/api.html
 
-https://discordpy.readthedocs.io/en/latest/faq.
+https://discordpy.readthedocs.io/en/latest/faq
 
 Errors I encountered:
 
