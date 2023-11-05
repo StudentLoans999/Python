@@ -97,7 +97,7 @@ DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 bot.run(os.environ.get('DISCORD_TOKEN'))
 ```
 
-I did this in [.env](.env) ; I kept both files in the same directory level
+I did this in [.env](.env) ; I kept both files in the same directory level, with the virtual environment
 ```
 # .env
 DISCORD_TOKEN = "INSERT TOKEN FROM https://discord.com/developers/application HERE"
