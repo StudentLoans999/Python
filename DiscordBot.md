@@ -56,7 +56,12 @@ Here I followed the guide directly
 Here I followed the guide directly
 ***
 ## Action 5
-Here I followed the guide directly but the discord UI has been updated so it is slightly different but the steps are the same. In the video, there's a helpful comment someone posted that fixed an error I was getting where I had to add to my code `client = discord.Client(intents=discord.Intents.default())`
+Here I followed the guide directly but the discord UI has been updated so it is slightly different but the steps are the same. In the video, there's a helpful comment someone posted that fixed an error I was getting where I had to add to my code `bot = discord.Client(intents=discord.Intents.default())` But that got changed later to
+```
+intents = discord.Intents.all()
+intents.message_content = True
+bot = commands.Bot(command_prefix='!', intents=intents)
+```
 
 After following the video, I continued following the guide which pretty much overwrote a lot that was done in the video (I just created one python file instead of splitting it up into three files originally)
 ***
