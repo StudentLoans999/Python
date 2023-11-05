@@ -1,4 +1,5 @@
-For this project, I created a bot for Discord for users to interact on the server with, by following this guide: 
+![image](https://github.com/StudentLoans999/Python/assets/77641113/30d062c8-236b-4827-8a0a-6dc64441261b)For this project, I created a bot for Discord for users to interact on the server with, by following this guide: 
+
 https://builtin.com/software-engineering-perspectives/discord-bot-python
 
 ## Table of Contents
@@ -27,9 +28,11 @@ Action 6 - Added custom custom features for the Bot like: Direct Messaging, Even
 ***
 
 ## Action 1 
-Make sure to install Python first, in the Windows Store. 
+Make sure to install Python first, in the Windows Store
+
 
 The rest of the steps listed below in this action were done in CMD:
+
 
 Also, create a Python Virtual Environment `python -m venv C:\Users\david\Desktop\DiscordBot` and then activate it : (https://realpython.com/python-virtual-environments-a-primer/)(https://docs.python.org/3/library/venv.html)(https://stackoverflow.com/questions/11005457/how-do-i-remove-delete-a-virtualenv#:~:text=You%20can%20do%20that%20by,delete%20myspecialenv%20or%20manual%20removal.&text=if%20you%20are%20windows%20user,command%20prompt%20rmvirtualenv%20environment%20name.)
 
@@ -71,4 +74,21 @@ https://stackoverflow.com/questions/71959420/client-init-missing-1-required-keyw
 
 https://stackoverflow.com/questions/68329014/discord-py-bot-not-triggering-and-ignoring-commands - I did `await bot.process_commands(message)`
 
-https://www.reddit.com/r/Discord_Bots/comments/b97qdz/improper_token_has_been_passed_error_using_python/ - I did 
+https://www.reddit.com/r/Discord_Bots/comments/b97qdz/improper_token_has_been_passed_error_using_python/ - I did this in [DiscordBot.py](DiscordBot.py)
+```
+import os
+DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
+
+# These comments below were for error testing, uncomment the Prints to make sure the token is set correctly
+#bot.run("DISCORD_TOKEN")
+#print(DISCORD_TOKEN)
+#print(os.environ.get('DISCORD_TOKEN'))
+
+bot.run(os.environ.get('DISCORD_TOKEN'))
+```
+
+I did this in [.env](.env) ; I kept both files in the same directory level
+```
+# .env
+DISCORD_TOKEN = "INSERT TOKEN FROM https://discord.com/developers/application HERE"
+```
