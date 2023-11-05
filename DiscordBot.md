@@ -66,7 +66,7 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 After following the video, I continued following the guide which pretty much overwrote a lot that was done in the video (I just created one python file instead of splitting it up into three files originally)
 ***
 ## Action 6
-H
+You can find the custom features in [DiscordBot.py](DiscordBot.py)
 ***
 ## Helpful Information:
 
