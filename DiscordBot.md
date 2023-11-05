@@ -10,7 +10,7 @@ https://builtin.com/software-engineering-perspectives/discord-bot-python
 - [Action 4](#Action-4)
 - [Action 5](#Action-5)
 - [Action 6](#Action-6)
-- [Helpful Information](#Additional=Information)
+- [Helpful Information](#Helpful-Information)
   
 ***
 ## Summary
@@ -63,7 +63,7 @@ After following the video, I continued following the guide which pretty much ove
 ## Action 6
 H
 ***
-Helpful Information:
+## Helpful Information:
 
 https://realpython.com/how-to-make-a-discord-bot-python/#interacting-with-discord-apis
 
