@@ -68,7 +68,7 @@ After following the video, I continued following the guide which pretty much ove
 ## Action 6
 You can find the custom features in [DiscordBot.py](DiscordBot.py)
 ***
-## Helpful Information:
+## Helpful Information
 
 https://realpython.com/how-to-make-a-discord-bot-python/#interacting-with-discord-apis
 
