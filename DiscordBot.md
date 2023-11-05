@@ -73,14 +73,10 @@ https://discordpy.readthedocs.io/en/latest/faq
 
 Errors I encountered:
 
-https://stackoverflow.com/questions/71959420/client-init-missing-1-required-keyword-only-argument-intents-or-tak - 
-
-I did `bot = discord.Client(intents=discord.Intents.default())`
+https://stackoverflow.com/questions/71959420/client-init-missing-1-required-keyword-only-argument-intents-or-tak - I did `bot = discord.Client(intents=discord.Intents.default())`
 
 
-https://stackoverflow.com/questions/68329014/discord-py-bot-not-triggering-and-ignoring-commands - 
-
-I did `await bot.process_commands(message)`
+https://stackoverflow.com/questions/68329014/discord-py-bot-not-triggering-and-ignoring-commands - I did `await bot.process_commands(message)`
 
 
 https://www.reddit.com/r/Discord_Bots/comments/b97qdz/improper_token_has_been_passed_error_using_python/ - I did this in [DiscordBot.py](DiscordBot.py)
