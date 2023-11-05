@@ -4,9 +4,10 @@ For this project, I created a bot for Discord for users to interact on the serve
 - [Summary](#Summary)
 - [Action 1](#Action-1)
 - [Action 2](#Action-2)
-- [Action 3](#Action-2)
-- [Action 4](#Action-2)
-- [Action 5](#Action-2)
+- [Action 3](#Action-3)
+- [Action 4](#Action-4)
+- [Action 5](#Action-5)
+- [Action 6](#Action-6)
   
 ***
 ## Summary
@@ -54,10 +55,14 @@ H
 ***
 Helpful information:
 https://realpython.com/how-to-make-a-discord-bot-python/#interacting-with-discord-apis
+
 https://discordpy.readthedocs.io/en/stable/ext/commands/api.html
+
 https://discordpy.readthedocs.io/en/latest/faq.
 
 Errors I encountered:
 https://stackoverflow.com/questions/71959420/client-init-missing-1-required-keyword-only-argument-intents-or-tak - I did `bot = discord.Client(intents=discord.Intents.default())`
+
 https://stackoverflow.com/questions/68329014/discord-py-bot-not-triggering-and-ignoring-commands - I did `await bot.process_commands(message)`
+
 https://www.reddit.com/r/Discord_Bots/comments/b97qdz/improper_token_has_been_passed_error_using_python/ - I did 
