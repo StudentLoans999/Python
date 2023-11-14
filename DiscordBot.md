@@ -38,7 +38,9 @@ The rest of the steps listed below in this action were done in CMD:
 
 
 Also, create a Python Virtual Environment `python -m venv C:\Users\david\Desktop\DiscordBot` and then activate it : (https://realpython.com/python-virtual-environments-a-primer/)
-(https://blog.finxter.com/modulenotfounderror-no-module-named-discord-in-python/))(https://docs.python.org/3/library/venv.html)(https://stackoverflow.com/questions/11005457/how-do-i-remove-delete-a-virtualenv#:~:text=You%20can%20do%20that%20by,delete%20myspecialenv%20or%20manual%20removal.&text=if%20you%20are%20windows%20user,command%20prompt%20rmvirtualenv%20environment%20name.)
+(https://blog.finxter.com/modulenotfounderror-no-module-named-discord-in-python/)
+(https://docs.python.org/3/library/venv.html)
+(https://stackoverflow.com/questions/11005457/how-do-i-remove-delete-a-virtualenv#:~:text=You%20can%20do%20that%20by,delete%20myspecialenv%20or%20manual%20removal.&text=if%20you%20are%20windows%20user,command%20prompt%20rmvirtualenv%20environment%20name.)
 
 Install pip : (https://www.liquidweb.com/kb/install-pip-windows/)
 
