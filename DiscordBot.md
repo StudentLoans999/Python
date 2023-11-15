@@ -31,7 +31,7 @@ Helpful Information - Resources used and steps taken to optimize and/or fix the 
 ***
 
 ## Action 1 
-Make sure to install Python first, in the Windows Store
+Make sure to install Python (Version 3.11 only, any additional version doesn't work with importing Discord.py) first, in the Windows Store, and from (https://www.python.org/downloads/windows/)
 
 
 The rest of the steps listed below in this action were done in CMD:
