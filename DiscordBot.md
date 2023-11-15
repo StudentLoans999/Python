@@ -80,7 +80,8 @@ https://discordpy.readthedocs.io/en/latest/faq
 
 Errors I encountered:
 
-(ChatGPT helps the most in making sure this and everything else in this Action are installed in the right place:
+(ChatGPT helps the most in making sure this and everything else in this Action are installed in the right place:)
+
 "WARNING: The script dotenv.exe is installed in 'C:\Users\david\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\Scripts' which is not on PATH.
   Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location."
   
