@@ -85,7 +85,7 @@ ChatGPT helps the most in making sure this and everything else in this Action ar
 "WARNING: The script dotenv.exe is installed in 'C:\Users\david\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\Scripts' which is not on PATH.
   Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location."
   
-  "import dotenv could not be resolved")
+  "import dotenv could not be resolved"
 
 https://stackoverflow.com/questions/71959420/client-init-missing-1-required-keyword-only-argument-intents-or-tak - I did `bot = discord.Client(intents=discord.Intents.default())`
 
