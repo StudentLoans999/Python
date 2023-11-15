@@ -32,7 +32,11 @@ Helpful Information - Resources used and steps taken to optimize and/or fix the 
 
 ## Action 1 
 Make sure to install Python (Version 3.11 only, any additional version doesn't work with importing Discord.py) first, in the Windows Store, and also from (https://www.python.org/downloads/windows/)
-
+(ChatGPT helps the most in making sure this and everything else in this Action are installed in the right place:
+"WARNING: The script dotenv.exe is installed in 'C:\Users\david\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\Scripts' which is not on PATH.
+  Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location."
+  
+  "import dotenv could not be resolved")
 
 The rest of the steps listed below in this action were done in CMD:
 
