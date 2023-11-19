@@ -11,6 +11,7 @@ https://builtin.com/software-engineering-perspectives/discord-bot-python
 - [Action 5](#Action-5)
 - [Action 6](#Action-6)
 - [Helpful Information](#Helpful-Information)
+- [Action 7](#Action-7)
   
 ***
 ## Summary
