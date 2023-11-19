@@ -128,7 +128,7 @@ Here is how I decided to logically process and formulate this minigame:
 + Player does !readysetgo command  
   + Has !readysetgo been done in the channel "ready-set-go"? 
       
-    NO: Tell player that the command only works in "ready-set-go" and offer a link to that channel  
+      NO: Tell player that the command only works in "ready-set-go" and offer a link to that channel  
   + Has !readysetgo been done before? YES: Tell player that a game is already running 
   + H
   + 
