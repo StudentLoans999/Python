@@ -125,9 +125,9 @@ Ready, Set, Go:
 The rules of this game are quite simple, a player starts off the game by doing the command !readysetgo and then will tell the Bot how many rounds to play. The Bot will then say "Ready", "Set" and then will say a bunch of random words in a random order that look similar to "Go". When the Bot does finally say "Go", the player who first does the command !dogo the fastest wins that round. If any player does the command !dogo before the Bot says "Go", then they get eliminated from the match. Throughout the game, everyone's role is shown in the Members area in Discord. The important roles are Winner and Eliminated. After all the rounds are concluded, the Bot will present a scoreboard listing all the winners and eliminated in the match.
 
 Here is how I decided to logically process and formulate this minigame:
-+ Player does !readysetgo command  
++ Player does !readysetgo command 
   + Has !readysetgo been done in the channel "ready-set-go"? 
-    + NO: Tell player that the command only works in "ready-set-go" and offer a link to that channel  
+    + **NO:** Tell player that the command only works in "ready-set-go" and offer a link to that channel  
   + Has !readysetgo been done before? YES: Tell player that a game is already running 
   + H
   + 
