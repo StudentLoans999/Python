@@ -24,7 +24,9 @@ Action 4 - Added the Bot to the server
 
 Action 5 - Gave the Bot functionality by using a Python file I wrote
 
-Action 6 - Added custom custom features for the Bot like: Direct Messaging, Event Listeners, and Input Commands
+Action 6 - Added custom features for the Bot (Direct Messaging, Event Listeners, and Input Commands) which are then used in the minigames I created
+
+Action 7 - Created minigames
 
 Helpful Information - Resources used and steps taken to optimize and/or fix the Bot
 
@@ -68,7 +70,7 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 After following the video, I continued following the guide which pretty much overwrote a lot that was done in the video (I just created one python file instead of splitting it up into three files originally)
 ***
 ## Action 6
-You can find the custom features in [DiscordBot.py](DiscordBot.py)
+You can find the custom features implemented throughout the .py files and also in the minigames. 
 ***
 ## Helpful Information
 
@@ -111,3 +113,20 @@ I did this in [.env](.env) ; I kept both files in the same directory level, with
 # .env
 DISCORD_TOKEN = "INSERT TOKEN FROM https://discord.com/developers/application HERE"
 ```
+***
+## Action 7
+After learning the basics of Discord Bot development, I decided to create some minigames (both classics and originals) to further my Python knowledge and experience.
+
+There are a lot of minigames (and user commands), so I'm just going to focus on describing in-depth one particular one: Ready, Set, Go. (The rest of the minigames are uploaded as well, so you can what they do, without an explanation.)
+
+Ready, Set, Go:
+
+The rules of this game are quite simple, a player starts off the game by doing the command !readysetgo and then will tell the Bot how many rounds to play. The Bot will then say "Ready", "Set" and then will say a bunch of random words in a random order that look similar to "Go". When the Bot does finally say "Go", the player who first does the command !dogo the fastest wins that round. If any player does the command !dogo before the Bot says "Go", then they get eliminated from the match. Throughout the game, everyone's role is shown in the Members area in Discord. The important roles are Winner and Eliminated. After all the rounds are concluded, the Bot will present a scoreboard listing all the winners and eliminated in the match.
+
+Here is how I decided to logically process and formulate this minigame:
++ Player does !readysetgo command
+  + Has !readysetgo been done before?
+  + 
+
+
+***
