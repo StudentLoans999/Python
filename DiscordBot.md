@@ -118,7 +118,7 @@ DISCORD_TOKEN = "INSERT TOKEN FROM https://discord.com/developers/application HE
 ## Action 7
 After learning the basics of Discord Bot development, I decided to create some minigames (both classics and originals) to further my Python knowledge and experience.
 
-There are a lot of minigames (and user commands), so I'm just going to focus on describing in-depth one particular one on this page: Ready, Set, Go. (The rest of the minigames are uploaded as well, so you can what they do, they all have an explanation.)
+There are a lot of minigames (and user commands), so I'm just going to focus on describing in-depth one particular one on this page: Ready, Set, Go. (The rest of the minigames are uploaded as well, so you can what they do, they just have an explanation like the one below.)
 
 Ready, Set, Go:
 
@@ -150,7 +150,7 @@ Here is how I decided to logically process and formulate this minigame:
           + **YES:** Stops the Bot from saying any additional words and lets the player not get eliminated, but win, for doing !dogo
           + **NO:** If a player does !dogo during this time, eliminate them   
 
-   _Scoreboard (End of Gameplay)_
+   _Scoreboard section (End of Gameplay)_
     + Was the final round just finished?
       + **YES:** Are there any Winners in the server?
         + **YES:** Is the current channel "ready-set-go"?
@@ -172,4 +172,10 @@ Here is how I decided to logically process and formulate this minigame:
       + Has !readysetgo been done in the channel "ready-set-go"?
 
 _Player does not do !dogo command after "Go" section_
+  + Has "Go" been said by the Bot and no player has done !dogo?
+    + **YES:** Checks for at least one player who isn't Eliminated and is in the channel "ready-set-go"
+      + **NO:** Exit... 
+      + **YES:** The Bot starts a 30-second timer
+        + Has "Go" still not been said by the Bot and no player has done !dogo, after the timer expires?
+          + **YES:** The Bot says that no one has responded in time and that the match is now concluded. Then it makes everyone, except the Winners, eliminated. Then the Bot runs the _Scoreboard section (End of Gameplay)_ logic
 ***
