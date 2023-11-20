@@ -29,7 +29,7 @@ Action 6 - Added custom features for the Bot (Direct Messaging, Event Listeners,
 
 Helpful Information - Resources used and steps taken to optimize and/or fix the Bot
 
-Action 7 - Created minigames and then explains how I went about making the specific one "Ready, Set, Go"
+Action 7 - Created minigames and then explained how I went about making the specific one "Ready, Set, Go"
 
 ***
 
