@@ -27,9 +27,9 @@ Action 5 - Gave the Bot functionality by using a Python file I wrote
 
 Action 6 - Added custom features for the Bot (Direct Messaging, Event Listeners, and Input Commands) which are then used in the minigames I created
 
-Action 7 - Created minigames
-
 Helpful Information - Resources used and steps taken to optimize and/or fix the Bot
+
+Action 7 - Created minigames and then explains how I went about making the specific one "Ready, Set, Go"
 
 ***
 
