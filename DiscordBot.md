@@ -127,7 +127,8 @@ The rules of this game are quite simple, a player starts off the game by doing t
 Here is how I decided to logically process and formulate this minigame:
 
 + Player does !readysetgo command 
-   _Setup section_
+
+  _Setup section_
     + Has !readysetgo been done in the channel "ready-set-go"? 
       + **NO:** Tell player that the command only works in "ready-set-go" and offer a link to that channel  
     + Has !readysetgo been done before?
