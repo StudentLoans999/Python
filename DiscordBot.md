@@ -128,18 +128,41 @@ Here is how I decided to logically process and formulate this minigame:
 
 + Player does !readysetgo command 
 
-  _Setup section_
+  _Initial Setup section_
     + Has !readysetgo been done in the channel "ready-set-go"? 
-      + **NO:** Tell player that the command only works in "ready-set-go" and offer a link to that channel  
+      + **NO:** Tell player that the command only works in "ready-set-go" and offer a link to that channel
+      + **YES:** Continue...
     + Has !readysetgo been done before?
-      + **YES:** Tell player that a game is already running 
+      + **YES:** Tell player that a game is already running
+      + **NO:** Continue to First Round section...
   
-  _First/Initial Round section (Start of Gameplay)_
-    + Is this the first round?
+  _Round Setup section (Start of Gameplay)_
+    + Will this be the first round?
       + **YES:** Resets all the players' roles (so that everyone is just a "Player" role, not a "Winner" or "Eliminated role)
         + Check to make sure it is the same player who did !readysetgo, that also input a number, when asked by the Bot how many rounds to set for this current match
-          + **NO:** Have the Bot tell that player that they didn't reply in time and should do !readysetgo again     
+          + **NO:** Have the Bot tell that player that they didn't reply in time and should do !readysetgo again
+          + **YES:** The Bot starts Round 1
+            
+  _Round 1 section (Start of Gameplay)_
+    + Is this the first round?
+      + **YES:** The Bot displays the current round number out of how many rounds total. Then it says "Ready", "Set" and then will say a bunch of random words in a random order (every half second) that look similar to "Go"
+        + Has the Bot said "Go"?
+          + **YES:** Stops the Bot from saying any additional words and lets the player not get eliminated, but win, for doing !dogo
+          + **NO:** If a player does !dogo during this time, eliminate them   
+
+   _Scoreboard (End of Gameplay)_
+    + Was the final round just finished?
+      + **YES:** Are there any Winners in the match?
+        + **YES:** Is the current channel "ready-set-go"?
+          + **YES:** The Bot then lists out players with the Winner role
+          + **NO:** The Bot says to everyone that the current channel is wrong and should be "ready-set-go"
+        + **NO:** The Bot says to everyone that there are no Winners in this match in the channel "ready-set-go"
+      +      
 
 + Player does !dogo command
+
+  _Initial Setup section_
+      + Has !readysetgo been done in the channel "ready-set-go"?
+
 
 ***
