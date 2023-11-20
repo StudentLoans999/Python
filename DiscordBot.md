@@ -133,7 +133,8 @@ Here is how I decided to logically process and formulate this minigame:
       + **NO:** Tell player that the command only works in "ready-set-go" and offer a link to that channel  
     + Has !readysetgo been done before?
       + **YES:** Tell player that a game is already running 
-  + First/Initial Round section (Start of Gameplay)
+  
+  _First/Initial Round section (Start of Gameplay)_
     + Is this the first round?
       + **YES:** Resets all the players' roles (so that everyone is just a "Player" role, not a "Winner" or "Eliminated role)
         + Check to make sure it is the same player who did !readysetgo, that also input a number, when asked by the Bot how many rounds to set for this current match
