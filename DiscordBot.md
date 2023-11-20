@@ -171,7 +171,7 @@ Here is how I decided to logically process and formulate this minigame:
   _Initial Setup section_
       + Has !readysetgo been done in the channel "ready-set-go"?
 
-_Player does not do !dogo command after "Go" section_
++ Player does not do !dogo command after "Go" section
   + Has "Go" been said by the Bot and no player has done !dogo?
     + **YES:** Checks for at least one player who isn't Eliminated and is in the channel "ready-set-go"
       + **NO:** Exit... 
