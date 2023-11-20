@@ -120,11 +120,11 @@ After learning the basics of Discord Bot development, I decided to create some m
 
 There are a lot of minigames (and user commands), so I'm just going to focus on describing in-depth one particular one on this page: Ready, Set, Go. (The rest of the minigames are uploaded as well, so you can what they do, they just have an explanation like the one below.)
 
-Ready, Set, Go:
+**Ready, Set, Go:**
 
 The rules of this game are quite simple, a player starts off the game by doing the command !readysetgo and then will tell the Bot how many rounds to play. The Bot will then say "Ready", "Set" and then will say a bunch of random words in a random order that look similar to "Go". When the Bot does finally say "Go", the player who first does the command !dogo the fastest wins that round. If any player does the command !dogo before the Bot says "Go", then they get eliminated from the match. Throughout the game, everyone's role is shown in the Members area in Discord. The important roles are Winner and Eliminated. After all the rounds are concluded, the Bot will present a scoreboard listing all the winners and eliminated in the match.
 
-Here is how I decided to logically process and formulate this minigame:
+Here is how I decided to logically process and formulate this minigame (my version of pseudocode):
 
 + Player does !readysetgo command 
 
@@ -169,7 +169,15 @@ Here is how I decided to logically process and formulate this minigame:
 + Player does !dogo command
 
   _Initial Setup section_
-      + Has !readysetgo been done in the channel "ready-set-go"?
+      + Has !dogo been done in the channel "ready-set-go"?
+        + **NO:** The Bot tells the player that they need to do !dogo in the channel "ready-set-go"
+        + **YES:** Has !readysetgo been done already?
+          + **NO:** The Bot tells the player that the game hasn't started yet, so !dogo won't do anything. Then it lets them know to do !readysetgo first
+          + **YES:** Has the Bot said "Go" yet?
+            + **NO:** Is the player who did !dogo, Eliminated?
+              + **YES:** The Bot tells that player that they are already eliminated. (This should never run though, since being Eliminated makes a player not able to speak for the rest of the match.)
+              + **NO:** The Bot tells the player that they went too early and now are eliminated for it 
+            + **YES:** The Bot makes players get the Waiting role (which makes them not able to speak temporarily while the next step in logic runs). Then the Bot tells the player that they were the fastest to do !dogo after "Go" appeared and that they have won this round. Then it sets the current round to be one higher and resets some other variables so that the next round can start without a hitch. Next, the Bot removes the Winners and Eliminated roles from the players so that the next round is fresh. After, the Bot removes the Waiting role from the players so that they can play in the next round. Finally, the Bot does the !readysetgo command itself which makes the game run another round
 
 + _Player does not do !dogo command after "Go" section_
   + Has "Go" been said by the Bot and no player has done !dogo?
