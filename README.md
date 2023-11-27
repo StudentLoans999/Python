@@ -160,7 +160,7 @@ Here is how I decided to logically process and formulate this minigame (my versi
       + **NO:** The Bot says to everyone that there are no Winners in this server
       + **YES:** Are there any Eliminated in the server?
           + **YES:** Is the current channel "ready-set-go"?
-            + **YES:** The Bot then lists out players with the Eliminated role in the match
+            + **YES:** The Bot then lists out players with the Eliminated role in the match, and whose status is Online
             + **NO:** The Bot says to everyone that the current channel is wrong and should be "ready-set-go"
           + **NO:** The Bot says to everyone that there are Eliminated but not in the channel "ready-set-go"
         + **NO:** The Bot says to everyone that there are no Eliminated in this server 
