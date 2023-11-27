@@ -137,11 +137,11 @@ Here is how I decided to logically process and formulate this minigame (my versi
       + **NO:** Continue to First Round section...
   
   _Round Setup section (Start of Gameplay)_
-    + Will this be the first round?
-      + **YES:** Resets all the players' roles (so that everyone is just a "Player" role, not a "Winner" or "Eliminated role)
-        + Check to make sure it is the same player who did !readysetgo, that also input a number, when asked by the Bot how many rounds to set for this current match
-          + **NO:** Have the Bot tell that player that they didn't reply in time and should do !readysetgo again
-          + **YES:** The Bot starts Round 1
+      + Will this be the first round?
+        + **YES:** Resets all the players' roles (so that everyone is just a "Player" role, not a "Winner" or "Eliminated role)
+          + Check to make sure it is the same player who did !readysetgo, and that they also input a positive integer (greater than zero), when asked by the Bot how many rounds to set for this current match
+            + **NO:** Have the Bot tell that player that they didn't reply in time and should do !readysetgo again
+            + **YES:** The Bot starts Round 1
             
   _Round 1 section (Start of Gameplay)_
     + Is this the first round?
