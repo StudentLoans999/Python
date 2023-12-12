@@ -4,6 +4,7 @@
 
 import discord
 from discord.ext import commands
+from discord.ui import button, View
 
 ###############################################################################################################################################################################################################
 
@@ -21,11 +22,11 @@ class faq(discord.ui.View):
     # You can add up to 25 buttons to the same view, but make sure its custom_id and function name are always different
 
 # # # Button: FAQ1 ; Introduction 
-    @discord.ui.button(label = 'Start here', custom_id = "FAQ1")
+    @discord.ui.button(label = 'Start here', custom_id = "FAQ1", style=discord.ButtonStyle.green)
     async def FAQ1(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.send_message(f"""I bet you are wondering what all of this is and what you can do with it all. 
                                                 \n Well, this server is a place of **community**. We offer channels dedicated to **social minigames**,
-                                                 but if you just want a place to chat around, that is done in <#1171905233467752530>    
+                                                \nbut if you just want a place to chat around, that is done in <#1171905233467752530>    
                                                 ...All run by me and the one who stared it all, David Richey, aka doubleoel
                                                 ...""")
 
@@ -74,7 +75,7 @@ class Buttons(commands.Cog):
 #
 
 # # # Command: !faq (View trigger) ; When a User does !faq in the " " Channel, it makes the Bot show: FAQ View with Buttons. EX: !faq 
-    @commands.command(help = 'Start here if you have any questions', description = 'The Bot will provide some info through some interactive buttons')
+    @commands.hybrid_command(name='faq', description = 'Start here if you have any questions')
     async def faq(self, ctx):
         await ctx.message.author.send("Hi! What you would like some information on?", view = faq())
 

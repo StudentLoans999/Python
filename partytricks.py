@@ -6,6 +6,7 @@ import discord
 from discord.ext import commands
 import random
 import asyncio
+import aiohttp
 
 ###############################################################################################################################################################################################################
 
@@ -13,16 +14,16 @@ import asyncio
 # # Event Listener section ############################################################################
 #
 
-# # # Create partytricks Class
-class Partytricks(commands.Cog):
+# # # Create Party_Tricks Class
+class Party_Tricks(commands.Cog):
     
     def __init__(self, bot):
         self.bot = bot
 
-# # # Event Listener: Bot on_ready - For when Partytricks has been loaded
+# # # Event Listener: Bot on_ready - For when Party_Tricks has been loaded
     @commands.Cog.listener()
     async def on_ready(self):
-        print('Partytricks has loaded')
+        print('Party_Tricks has loaded')
 
 ###############################################################################################################################################################################################################
 
@@ -32,8 +33,9 @@ class Partytricks(commands.Cog):
 
 # # # Command: !eightball question (any text) ; The Bot will respond with a message in the same Channel EX: !eightball question here
     # It would contain the question asked along with a random quote chosen from 'responses'
-    @commands.command(aliases = ['8ball'], help = 'Ask the 8 Ball a Yes or No question', description = 'The Bot will give you an answer \nExample: !8ball Am I going to win the lottery')
-    async def eightball(self, ctx, *, question = commands.parameter(default = None, description = "- Put in a Yes or No question to ask")):
+    @commands.hybrid_command(name='eightball', aliases = ['8ball'], description = 'Ask the 8 Ball a Yes or No question')
+    async def eightball(self, ctx, *, question):
+        
         responses = ["It is certain", "It is decidedly so", "Without a doubt", "Yes definitely", "You may rely on it", "As I see it, yes", "Most likely", "Outlook good",
                     "Yes", "Signs point to yes", "Reply hazy, try again", "Ask again later", "Better not tell you now", "Cannot predict now", "Concentrate and ask again", 
                     "Don't count on it", "My reply is no", "My sources say no", "Outlook not so good", "Very doubtful"
@@ -50,8 +52,9 @@ class Partytricks(commands.Cog):
             await ctx.send(f':8ball: **Question**: {question}:8ball:\n:8ball: **Answer**: {random.choice(responses)}:8ball:')
 
 # # # Command: !roll2 ; Rolls two six-sided dice and shows each Outcome and then adds them together and the Bot sends the Total Result to the Channel EX: !roll2
-    @commands.command(help = 'Rolls two six-sided dice one-by-one, showing you the outcomes, and totaling the results', description = 'The Bot will show you it generating two numbers between 1-6, adding them together, and the total')
+    @commands.hybrid_command(name='roll2', description = 'Rolls two six-sided dice one-by-one, showing you the outcomes, and totaling the results')
     async def roll2(self, ctx):
+
         roll1 = 0
         roll2 = 0
         total = 0
@@ -66,16 +69,18 @@ class Partytricks(commands.Cog):
             await ctx.send(f'{roll1} + {roll2} = **{total}**')
 
 # # # Command: !ezroll ; Rolls two six-sided dice and the Bot sends the Total Result to the Channel EX: !ezroll
-    @commands.command(help = 'Rolls two imaginary six-sided dice and then tells you the final outcome', description = 'The Bot will generate two numbers between 1-6, adds them together, and sends you the total')
+    @commands.hybrid_command(name='ezroll', description = 'Rolls two imaginary six-sided dice and then tells you the final outcome')
     async def ezroll(self, ctx):
+
         total = 0
         for i in range(2):
             total += random.randint(1, 6)
         await ctx.send(total)
 
 # # # Command: !rolldie # ; Rolls a #-sided die where the User choose the # and the Bot sends the Outcome to the Channel EX: !rolldie ....... # from list shown
-    @commands.command(help = 'Rolls a die that has as many sides as you told it to have from the list and then tells you the result', description = 'The Bot will generate a number between 1 amd the one you selected and then tells you the outcome')
+    @commands.hybrid_command(name='rolldie', description = 'Rolls a die that has as many sides as you told it to have and then tells you the result')
     async def rolldie(self, ctx):
+
         restart = True
         e = True
 
@@ -110,8 +115,9 @@ class Partytricks(commands.Cog):
                 break
 
 # # # Command: !rollcustomdie # ; Rolls a #-sided die where the User inputs the # and the Bot sends the Outcome to the Channel EX: !rollcustomdie #
-    @commands.command(help = 'Rolls a die that has as many sides as you told it to have and then tells you the result', description = 'The Bot will generate a number between 1 amd the one you said and then tells you the outcome')
+    @commands.hybrid_command(name='rollcustomdie', description = 'Rolls a die that has as many sides as you told it to have and then tells you the result')
     async def rollcustomdie(self, ctx):
+
         restart = True
         e = True
 
@@ -147,12 +153,23 @@ class Partytricks(commands.Cog):
 
 
 # # # Command: !botdnd ; Change the Bot's Status to Do Not Disturb and a random message for its Activity EX: !botdnd
-    @commands.command(help = 'Change the Status of the Bot to Do Not Disturb and gives it an Activity to do ;p', description = 'The Bot will go to Do Not Disturb since it will be busy doing something...')
+    @commands.hybrid_command(name='botdnd', description = 'Change the Status of the Bot to Do Not Disturb and gives it an Activity to do ;p')
     async def botdnd(self, ctx):
         possible_activity = ["your Mom", "your Dad", "your Bro", "your Sis", "your Cuz", "your Gpa", "your Gma"]
         await ctx.bot.change_presence(status = discord.Status.dnd, activity = discord.Game(random.choice(possible_activity)))
 
+# # # Command: !fact # ; DMs a random fact # EX: !fact #
+    @commands.hybrid_command(hame='fact', description = 'DMs you a random fact')
+    async def fact(self, ctx, number):
+
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f'http://numbersapi.com/{number}') as response:
+                fact = await response.text()
+                embed=discord.Embed(description=fact)
+
+        await ctx.author.send(embed=embed)
+
 ###############################################################################################################################################################################################################
 
 async def setup(bot):
-    await bot.add_cog(Partytricks(bot)) # name of the Class, look above
+    await bot.add_cog(Party_Tricks(bot)) # name of the Class, look above

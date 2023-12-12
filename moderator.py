@@ -22,11 +22,28 @@ class Moderator(commands.Cog):
     async def on_ready(self):
         print('Moderator has loaded')
 
+# # # Event Listener: Bot on_message - For when a non-Moderator does any of the commands anywhere, have that message deleted (so the channel doesn't get filled up)
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if message.content.startswith("!sync") or message.content.startswith("!clear") or message.content.startswith("!mute") or message.content.startswith("!unmute") or message.content.startswith("!kickuser") or message.content.startswith("!banuser") or message.content.startswith("!unbanuser"): 
+            await message.delete()
+
 ###############################################################################################################################################################################################################
 
 #
 # # Command section ############################################################################
 #
+    # When a non-Moderator tries to do the commands below
+    async def missing_moderator_role_error(self, ctx, error):
+        if isinstance(error, commands.MissingRole):
+            await ctx.author.send("You don't have the **Moderator** role, so you can't use that command")
+
+# # # Command: !sync ; Updates the commands (needed for slash commands) EX: !sync
+    @commands.command(help='Updates the commands (needed for slash commands)', description=' - Can be done anywhere')
+    @commands.has_role('Moderator')
+    async def sync(self, ctx) -> None:
+        sync = await ctx.bot.tree.sync()
+        print(f'synced {len(sync)} commands')
 
 # # # Command: !clear # ; Allows the Moderator Role to Delete messages in a Channel by doing !clear #OfMessagesToDelete EX: !clear 3
     @commands.command(name="clear", help='Delete a specified number of messages from the current channel', description='The Bot will delete the number of messages you tell it to. 100 is the limit \nExample: !clear 3')
@@ -36,7 +53,12 @@ class Moderator(commands.Cog):
         if number > 100:
             number = 101
         await channel.purge(limit=number+1)
-        await ctx.send(f"Deleted the last {number} message(s) in this channels")
+        if number == 1:
+            await ctx.send(f"Deleted the last message in this channel")
+        elif number > 100:
+            await ctx.send(f"Deleted the last 100 messages in this channel")
+        else:
+            await ctx.send(f"Deleted the last {number} messages in this channel")
 
 # # # Command: !mute user ; Allows the Moderator Role to Mute a specified User by doing !mute User EX: !mute cool-man-stu     EX: !mute @CoolManStu
     @commands.command(help='Mute a specified user', description='The user will be muted \nExample: !mute @CoolManStu \nYou can unmute them with the Command: !unmute')
@@ -83,6 +105,16 @@ class Moderator(commands.Cog):
                 return 
         await ctx.guild.unban(obj)
         await ctx.send(f'Unbanned {obj}')
+
+    # Error handling for when a non-Moderator tries to do the commands above
+    @clear.error
+    @mute.error
+    @unmute.error
+    @kickuser.error
+    @banuser.error
+    @unbanuser.error
+    async def on_command_error(self, ctx, error):
+        await self.missing_moderator_role_error(ctx, error)
 
 ###############################################################################################################################################################################################################
 

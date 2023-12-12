@@ -16,7 +16,7 @@ readysetgo_elapsedtime = 0
 readysetgo_firsttogo = 0
 readysetgo_setround = 0
 readysetgo_currentround = 0
-go = False
+readysetgo_go = False
 dogo = False
 
 ###############################################################################################################################################################################################################
@@ -25,33 +25,36 @@ dogo = False
 # # Event Listener section ############################################################################
 #
 
-# # # Create ReadySetGo Class
-class ReadySetGo(commands.Cog):
+# # # Create Ready_Set_Go Class
+class Ready_Set_Go(commands.Cog):
     
     def __init__(self, bot):
         self.bot = bot
 
-# # # Event Listener: Bot on_ready - For when ReadySetGo has been loaded
+# # # Event Listener: Bot on_ready - For when Ready_Set_Go has been loaded
     @commands.Cog.listener()
     async def on_ready(self):
-        print('ReadySetGo has loaded')
+        print('Ready_Set_Go has loaded')
 
-# # # Event Listener: Bot on_message - For when a User does "!readysetgo", have that message deleted (so the channel doesn't get filled up)
+# # # Event Listener: Bot on_message - For when a User does !readysetgo or !dogo outside the right channel, have that message deleted (so the channel doesn't get filled up)
     @commands.Cog.listener()
     async def on_message(self, message):
+        if message.author.bot:
+            return  # ignore messages from bot
+        
         if message.content == "!readysetgo" and message.channel.name != "ready-set-go":
             await message.delete()
         elif message.content == "!dogo" and message.channel.name != "ready-set-go":
             await message.delete()
-
+        
 ###############################################################################################################################################################################################################
 
 #
 # # Command section ############################################################################
 #
 
-# # # Command: !readysetgo ; When a User does !readysetgo in the ready-set-go channel, then the game: Ready Set Go starts EX: !readysetgo
-    @commands.command(help = 'Play Ready Set Go (go to ready-set-go Channel first)', description = 'Has to be run in the Channel: ready-set-go')
+# # # Command: !readysetgo ; When a User does !readysetgo in the ready-set-go channel, then the game: Ready, Set, Go starts EX: !readysetgo
+    @commands.hybrid_command(name='readysetgo', description = 'Play Ready, Set, Go (go to ready-set-go Channel first)')
     async def readysetgo(self, ctx:commands.Context):
         global readysetgo_running # start the game
         global readysetgo_finished
@@ -59,7 +62,7 @@ class ReadySetGo(commands.Cog):
         global readysetgo_elapsedtime
         global readysetgo_setround
         global readysetgo_currentround
-        global go
+        global readysetgo_go
         global dogo
 
         # Makes sure !readysetgo can only be run in the right channel
@@ -67,13 +70,11 @@ class ReadySetGo(commands.Cog):
             await ctx.author.send(f"It looks like you have tried to do the command: **!readysetgo** which is specific to the Channel: <#1172292919420538961> Please go there and try it")    
         
         elif ctx.channel.name == "ready-set-go": # the command was done in the correct Channel: ready-set-go
-            
-            
-
+                     
             # Player did !readysetgo but the Game has already started
 
             if readysetgo_running == True:
-                await ctx.author.send("The game has already started, so **!readysetgo** won't do anything")
+                await ctx.author.send("A **Ready, Set, Go!** game has already started, so **!readysetgo** won't do anything. Please go to the Channel: <#1172292919420538961>")
             
             else: # readysetgo has not been started already, so let it get started and run its logic
                 readysetgo_running = True
@@ -87,9 +88,31 @@ class ReadySetGo(commands.Cog):
                     guild_member = channel.guild.get_member(fresh_member.id)
                     fresh_roles = guild_member.roles
 
-                    # Print or do something with the roles
-                    #role_names = [role.name for role in fresh_roles]
-                    #print(f"{guild_member.display_name}'s roles in {channel.name}: {', '.join(role_names)}")
+                # Concludes the game ; Removes Eliminated and Winners Roles applied to users, and gives everyone the Players role, so that everything is fresh for a new game
+                Winners_role = discord.utils.get(ctx.guild.roles, name = "Winners")
+                Eliminated_role = discord.utils.get(ctx.guild.roles, name = "Eliminated")
+
+                for user in members:
+                    if user.name == "Heart-to-Heart Bot":
+                        print()
+
+                    else:
+                        for user in channel.members:#1234
+                            fresh_member = await self.bot.fetch_user(user.id)
+                            guild_member = channel.guild.get_member(fresh_member.id)
+                            fresh_roles = guild_member.roles
+
+                        for user in members:
+                            if user.name == "Heart-to-Heart Bot":
+                                print()
+
+                            else:
+                                Players_role = discord.utils.get(ctx.guild.roles, name = "Players")
+                                await user.add_roles(Players_role)
+                                await user.remove_roles(Winners_role)
+                                await user.remove_roles(Eliminated_role)
+                                Waiting_role = discord.utils.get(ctx.guild.roles, name = "Waiting")
+                                await user.remove_roles(Waiting_role)
 
  ##### Scoreboard section                    ######################
 
@@ -101,8 +124,6 @@ class ReadySetGo(commands.Cog):
                         guild_member = channel.guild.get_member(fresh_member.id)
                         fresh_roles = guild_member.roles
 
-
-
                     Winners_role = discord.utils.get(ctx.guild.roles, name = "Winners")
                     Eliminated_role = discord.utils.get(ctx.guild.roles, name = "Eliminated")
 
@@ -110,12 +131,13 @@ class ReadySetGo(commands.Cog):
 
                         if channel is not None and isinstance(channel, discord.TextChannel): # makes sure it only looks for users in the Channel: ready-set-go
                             # Get a list of members with the target role in the specified channel
-                            members_with_role = [member for member in channel.members if Winners_role in member.roles] # gets a list of users with the Winner role in the Channel: ready-set-go
+                            members_with_Winners_role = [member for member in channel.members if Winners_role in member.roles] # gets a list of users with the Winner role in the Channel: rock-paper-scissors-cpu
+                            members_with_Winners_role_and_online = [member for member in Winners_role.members if member.status == discord.Status.online] # makes sure to only get users who are Online
 
-                            if members_with_role: # outputs the Winners in the match, if there are any 
-                                user_list = "\n".join([member.name for member in members_with_role]) # prints the list of users with the Winners role in the Channel: ready-set-go
+                            if members_with_Winners_role_and_online: # outputs the Winners in the match and still Online in the match, if there are any 
+                                user_list = "\n".join([member.name for member in members_with_Winners_role_and_online]) # prints the list of Online users with the Winners role in the Channel: ready-set-go
                                 print(f'Users with the role {Winners_role} in the channel {channel}:\n{user_list} are a Winner!!!')
-                                await ctx.send(f'_ _ \nPlayers who have won a round in this match are: \n**{user_list}**\n')
+                                await ctx.send(f'_ _ \nPlayer(s) who have won a round in this match and who are still Online are: \n**{user_list}**\n')
                             
                             else: # outputs that there are no Winners in this match
                                 print(f'No users have the role {Winners_role} in the channel {channel}.')
@@ -131,12 +153,13 @@ class ReadySetGo(commands.Cog):
 
                         if channel is not None and isinstance(channel, discord.TextChannel): # makes sure it only looks for users in the Channel: ready-set-go
                             
-                            members_with_role = [member for member in channel.members if Eliminated_role in member.roles] # gets a list of users with the Eliminated role in the Channel: ready-set-go
+                            members_with_Eliminated_role = [member for member in channel.members if Eliminated_role in member.roles] # gets a list of users with the Eliminated role in the Channel: rock-paper-scissors-cpu
+                            members_with_Eliminate_role_and_online = [member for member in Eliminated_role.members if member.status == discord.Status.online] # makes sure to only get users who are Online
 
-                            if members_with_role: # outputs the Eliminated in the match, if there are any
-                                user_list = "\n".join([member.name for member in members_with_role]) # prints the list of users with the Eliminated role in the Channel: ready-set-go
+                            if members_with_Eliminate_role_and_online: # outputs the Eliminated in the match and still Online in the match, if there are any
+                                user_list = "\n".join([member.name for member in members_with_Eliminate_role_and_online]) # prints the list of Online users with the Eliminated role in the Channel: ready-set-go
                                 print(f'Users with the role {Eliminated_role} in the channel {channel}:\n{user_list} are a Loser :(')
-                                await ctx.send(f'_ _ \nPlayers who have been eliminated in this match are: \n**{user_list}**\n')
+                                await ctx.send(f'_ _ \nPlayer(s) who have been eliminated in this match are: \n**{user_list}**\n')
                             
                             else: # outputs that there are no Eliminated in this match
                                 print(f'No users have the role {Eliminated_role} in the channel {channel}.')
@@ -150,7 +173,7 @@ class ReadySetGo(commands.Cog):
 
                     # Concludes the game ; Removes Eliminated and Winners Roles applied to users, and gives everyone the Players role, so that everything is fresh for a new game
                     for user in members:
-                        if user.name == "ChatBot":
+                        if user.name == "Heart-to-Heart Bot":
                             print()
 
                         else:
@@ -159,35 +182,32 @@ class ReadySetGo(commands.Cog):
                                 guild_member = channel.guild.get_member(fresh_member.id)
                                 fresh_roles = guild_member.roles
 
-
-                            
-
                             for user in members:
-                                if user.name == "ChatBot":
+                                if user.name == "Heart-to-Heart Bot":
                                     print()
 
                                 else:
                                     Players_role = discord.utils.get(ctx.guild.roles, name = "Players")
                                     await user.add_roles(Players_role)
-                                    #Winners_role = discord.utils.get(ctx.guild.roles, name = "Winners")
                                     await user.remove_roles(Winners_role)
-                                    #Eliminated_role = discord.utils.get(ctx.guild.roles, name = "Eliminated")
                                     await user.remove_roles(Eliminated_role)
+                                    Waiting_role = discord.utils.get(ctx.guild.roles, name = "Waiting")
+                                    await user.remove_roles(Waiting_role)
                             
                     await ctx.send(f'_ _ \nThe game has concluded. Thank you for playing!')
                     readysetgo_running = False
                     readysetgo_setround = 0
                     readysetgo_currentround = 0
-                    go = False
+                    readysetgo_go = False
                     dogo = False
-                    exit
+                    return
 
  ##### First Round Setup section                    ######################
 
                 # The game has just started, so do the first round logic
                 if readysetgo_currentround == 0:
                     for user in members: # removes Eliminated and Winners Roles applied to users
-                        if user.name == "ChatBot":
+                        if user.name == "Heart-to-Heart Bot":
                             print()
 
                         else:
@@ -196,11 +216,12 @@ class ReadySetGo(commands.Cog):
                                 guild_member = channel.guild.get_member(fresh_member.id)
                                 fresh_roles = guild_member.roles
 
-
                             Eliminated_role = discord.utils.get(ctx.guild.roles, name = "Eliminated")
                             await user.remove_roles(Eliminated_role)
                             Winners_role = discord.utils.get(ctx.guild.roles, name = "Winners")
                             await user.remove_roles(Winners_role)
+                            Waiting_role = discord.utils.get(ctx.guild.roles, name = "Waiting")
+                            await user.remove_roles(Waiting_role)
                             Players_role = discord.utils.get(ctx.guild.roles, name = "Players")
                             await user.add_roles(Players_role)
 
@@ -217,24 +238,36 @@ class ReadySetGo(commands.Cog):
                         try:
                             msg = await ctx.bot.wait_for("message", check = check, timeout = 10)
                         except Exception as e:
-                            print(f"An error occurred: {e}")
-                            await ctx.reply("\nSorry, you didn't reply in time! Do !readysetgo to try again")
+                            await ctx.reply("\nSorry, you didn't reply in time or you didn't input a positive integer! Please do **!readysetgo** to try again")
+                            readysetgo_running = False
+                            return
                         
                         readysetgo_setround = msg.content
+
+                        if int(readysetgo_setround) <= 0: # checks for if the user put in a zero or negative integer
+                            print("Bad number")
+                            print(readysetgo_setround)
+                            await ctx.reply("\nIt seems like you don't want to play. Please do **!readysetgo** when you do want to")
+                            readysetgo_running = False
+                            return
+                        else:
+                            print("Good number")
+                            print(readysetgo_setround)
+
                         print(readysetgo_currentround)
                         readysetgo_currentround += 1
-                        await ctx.send(f"""We are going to do **{readysetgo_setround}** round(s).
+                        await ctx.send(f"""Welcome to Ready, Set, Go! We are going to do **{readysetgo_setround}** round(s).
                                         \nThe rules of this game are to say "!dogo" as soon as "Go" appears. But, do not say "!dogo" before that, or else you'll be eliminated for the entire match. 
                                         \nWhen "Go" appears but no one responds within 30 seconds, everyone will be eliminated.
                                         \n This is a game of focus and reflexes. Good luck and have fun!""")
                         
                     except asyncio.TimeoutError: # tells the user that the game has been cancelled and has to be rerun, because they didn't input the round request in time
                         print(readysetgo_currentround)
-                        await ctx.reply("\nSorry, you didn't reply in time! Do !readysetgo to try again")
+                        await ctx.reply("\nSorry, you didn't reply in time! Do **!readysetgo** to try again")
                         readysetgo_running = False
                         return
 
-##### Gameplay section                    ######################
+##### Gameplay Setup section                    ######################
 
                 # This is the first round of the game, or a round of the game has just finished, so do the gameplay (next round) logic
                 if (readysetgo_currentround > 0) and (readysetgo_currentround <= int(readysetgo_setround)):
@@ -242,7 +275,6 @@ class ReadySetGo(commands.Cog):
                         fresh_member = await self.bot.fetch_user(user.id)
                         guild_member = channel.guild.get_member(fresh_member.id)
                         fresh_roles = guild_member.roles
-
 
                     await ctx.send(f'_ _ \n**Round {readysetgo_currentround} of {readysetgo_setround}**\n')
         
@@ -257,10 +289,10 @@ class ReadySetGo(commands.Cog):
                     await ctx.channel.send('_ _ \nSet')
                     await asyncio.sleep(1)
 
-                    go = False # sets the Bot to start off the gameplay 
+                    readysetgo_go = False # sets the Bot to start off the gameplay 
                     dogo = False
 
-                    while go == False: # the Bot will continue spamming out words (this is the gameplay) until it sends out "Go"
+                    while readysetgo_go == False: # the Bot will continue spamming out words (this is the gameplay) until it sends out "Go"
                         send_rhyme = await ctx.channel.send(f'_ _ \n{random.choice(rhymes)}') # use _ _ to do a new line at the beginning of a message
                         send_rhyme # have to assign it as a variable in order to do .content.split() (I think, at least)
                         rhyme_sent = send_rhyme.content.split()[2] # I did '2' instead of '0' because '0' only outputs the '_' instead of the actual word
@@ -271,16 +303,16 @@ class ReadySetGo(commands.Cog):
                         # Bot sent a message that said "Go"
                         if rhyme_sent_comparison == "Go":
                             readysetgo_finished = True
-                            go = True # stops the loop, which stops the Bot from spamming
+                            readysetgo_go = True # stops the loop, which stops the Bot from spamming
 
 ##### User did not do !dogo section                    ######################
             
-                    while go == True and dogo == False: # Bot sent a message that said "Go", so do the verification logic and then the timer for message response logic 
+                    while readysetgo_go == True and dogo == False: # Bot sent a message that said "Go", so do the verification logic and then the timer for message response logic 
                         try: # first check if every user in the channel is eliminated, if not, then ; wait 30 seconds, if no input given, then everyone gets eliminated
                             for user in members: # looks for all the people in the Channel ready-set-go that have the Eliminated role
                                 Eliminated_role = discord.utils.get(ctx.guild.roles, name = "Eliminated")
                             
-                            if Eliminated_role is not None: #       
+                            if Eliminated_role is not None: # checks if there are any non-Eliminated players
 
                                 if channel is not None and isinstance(channel, discord.TextChannel): # makes sure it only looks for users in the Channel: ready-set-go
                                     
@@ -292,7 +324,7 @@ class ReadySetGo(commands.Cog):
                                             raise asyncio.TimeoutError
 
                         except asyncio.TimeoutError:
-                            if go == True and dogo == False:
+                            if readysetgo_go == True and dogo == False:
                                 await ctx.send("_ _ \n**No one responded in time ; the match is now concluded.**")
                                 channel = discord.utils.get(ctx.guild.channels, name = "ready-set-go")
                                 members = channel.members
@@ -306,45 +338,34 @@ class ReadySetGo(commands.Cog):
                                     members_with_role = [member for member in channel.members if Winners_role in member.roles] # gets a list of users with the Winner role in the Channel: ready-set-go
                                     if members_with_role: 
                                         ctx.send(members_with_role) # bot says the Winners in the match, if there are any 
-                                    elif user.name == "ChatBot": # bot can't get Eliminated
+                                    elif user.name == "Heart-to-Heart Bot": # bot can't get Eliminated
                                         await user.remove_roles(Eliminated_role)                           
                                     else:
                                         await user.add_roles(Eliminated_role) # everyone, besides the Winners, get Eliminated
 
-
                                 # Now all users are eliminated, so go to scoreboard logic
                                 Players_role = discord.utils.get(ctx.guild.roles, name = "Players")
-
-                                #await user.remove_roles(Players_role)#1234
-                                #Waiting_role = discord.utils.get(ctx.guild.roles, name = "Waiting")
-                                #Players_role = discord.utils.get(ctx.guild.roles, name = "Players")
-                                
-                                #for user in members:
-                                #    await user.add_roles(Waiting_role)
 
                                 readysetgo_currentround = int(readysetgo_setround) + 1
                                 print(readysetgo_currentround)
                                 readysetgo_finished = False
                                 readysetgo_running = False
-
-                                #for user in members:
-                                #    await user.remove_roles(Waiting_role)
                                 
                                 for user in channel.members:#1234
                                     fresh_member = await self.bot.fetch_user(user.id)
                                     guild_member = channel.guild.get_member(fresh_member.id)
                                     fresh_roles = guild_member.roles
 
-
                                 readysetgo_restart = ctx.bot.get_command('readysetgo')
                                 await readysetgo_restart(ctx)
                             
                             else:
-                                await ctx.send (f'!dogo has been done or the next round has started')
+                                print(f'!dogo has been done or the next round has started')
 
+##### Gameplay section                    ######################
 
 # # # Command: !dogo ; Player does !dogo to say when he thinks he sees "Go" get sent by the Bot. EX: dogo!
-    @commands.command(help = 'Do this command when "Go" appears to win. (If done before it appears, you lose)', description = 'Has to be run in the Channel: ready-set-go')
+    @commands.hybrid_command(name='dogo', description = 'Do this command when "Go" appears to win. (If done before it appears, you lose)')
     async def dogo(self, ctx:commands.Context):
         global readysetgo_running
         global readysetgo_finished
@@ -353,7 +374,7 @@ class ReadySetGo(commands.Cog):
         global readysetgo_firsttogo
         global readysetgo_setround
         global readysetgo_currentround
-        global go
+        global readysetgo_go
         global dogo
 
         # Makes sure !dogo can only be run in the right channel 
@@ -380,12 +401,12 @@ class ReadySetGo(commands.Cog):
                             return
                 
                 channel = discord.utils.get(ctx.guild.channels, name = "ready-set-go")
-                if readysetgo_finished == True:
+
+                if readysetgo_finished == True: # the Bot has said "Go"
                     for user in channel.members:#1234
                         fresh_member = await self.bot.fetch_user(user.id)
                         guild_member = channel.guild.get_member(fresh_member.id)
                         fresh_roles = guild_member.roles
-
 
                     channel = discord.utils.get(ctx.guild.channels, name = "ready-set-go")
                     members = channel.members
@@ -396,7 +417,7 @@ class ReadySetGo(commands.Cog):
                         await user.add_roles(Waiting_role)
 
                     await ctx.reply(f'You were the fastest to say !dogo after "Go" appeared. Hooray, you have won this round!!\n')
-                    go = False 
+                    readysetgo_go = False 
                     dogo = True
                     readysetgo_currentround +=1
                     print(readysetgo_currentround)
@@ -408,15 +429,13 @@ class ReadySetGo(commands.Cog):
                     Winners_role = discord.utils.get(ctx.guild.roles, name = "Winners")
                     await ctx.message.author.add_roles(Winners_role)
 
-
                     for user in channel.members:#1234
                         fresh_member = await self.bot.fetch_user(user.id)
                         guild_member = channel.guild.get_member(fresh_member.id)
                         fresh_roles = guild_member.roles
 
-
                     for user in members:
-                        if user.name == "ChatBot":
+                        if user.name == "Heart-to-Heart Bot":
                             await user.remove_roles(Waiting_role)
 
                         else:
@@ -426,18 +445,16 @@ class ReadySetGo(commands.Cog):
                                 elif role.name == "Eliminated": 
                                     await user.remove_roles(Waiting_role)
                                 else:
-                                    #await user.add_roles(Players_role)
                                     await user.remove_roles(Waiting_role)
                             
-                    
                     readysetgo_restart = ctx.bot.get_command('readysetgo')
                     await readysetgo_restart(ctx)
                     
             else:
                 # Player did !dogo but the Game hasn't started
-                await ctx.author.send("Hold your horses, Ready Set Go hasn't started yet, so **!dogo** won't do anything. If you would like to play, do **!readysetgo** to start a game first")           
+                await ctx.author.send("Hold your horses, Ready, Set, Go hasn't started yet, so **!dogo** won't do anything. If you would like to play, do **!readysetgo** in the server: **Heart-to-Heart** to start a game first")           
 
 ###############################################################################################################################################################################################################
 
 async def setup(bot):
-    await bot.add_cog(ReadySetGo(bot)) # name of the Class, look above
+    await bot.add_cog(Ready_Set_Go(bot)) # name of the Class, look above
