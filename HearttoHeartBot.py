@@ -36,7 +36,7 @@ tracemalloc.start()
 # These are needed in order for the Bot to work properly
 intents = discord.Intents.all()
 intents.message_content = True
-bot = commands.Bot(command_prefix = '!', intents = intents) # makes "!" be the character that Users use to run a Command
+bot = commands.Bot(command_prefix = '!', intents = intents, help_command=None) # makes "!" be the character that Users use to run a Command
 
 ###############################################################################################################################################################################################################
 
@@ -47,7 +47,7 @@ bot = commands.Bot(command_prefix = '!', intents = intents) # makes "!" be the c
 # # # Event Listener: Bot on_ready - For when the Bot has first been turned On ############################################################################
 @bot.event # has to be done before the ##Cogs section## below in order for this syntax to work
 async def on_ready():
-    
+
     guild_count = 0 # creates a Counter to keep track of how many Guilds/Servers the Bot is connected to
 
     # Loops through all the Guilds/Servers that the Bot is associated with and Prints the Server's ID and Name
@@ -98,10 +98,18 @@ async def on_member_remove(member):
 # # # Event Listener - Changes the Bot's Presence to be Listening to a specific User when that User starts Typing, and then changes the Bot's Presence back to nothing (not Listening) ############################################################################
 @bot.event
 async def on_typing(channel, user, when):
-    print(user.name + " is typing in", channel.name + " at", when) # prints the user's name nad the channel they're typing in, and at what time
-    await bot.change_presence(activity = discord.Activity(type = discord.ActivityType.listening, name = user.name))
-    await asyncio.sleep(1) # this delay is so that Users can actually see the changed display of the Presence, instead of it changing back to "normal" instantly
-    await bot.change_presence(activity = discord.Activity(type = discord.ActivityType.custom)) # changes Presence back to "normal"
+
+    if isinstance(channel, discord.DMChannel): # handle DM channels differently, as they don't have a 'name' attribute
+        print(user.name + " is typing in a DM" + " at", when)
+        await bot.change_presence(activity = discord.Activity(type = discord.ActivityType.listening, name = user.name))
+        await asyncio.sleep(1) # this delay is so that Users can actually see the changed display of the Presence, instead of it changing back to "normal" instantly
+        await bot.change_presence(activity = discord.Activity(type = discord.ActivityType.custom)) # changes Presence back to "normal"
+
+    else:# non-DM channel, so it does have a 'name' attribute
+        print(user.name + " is typing in", channel.name + " at", when) # prints the user's name and the channel they're typing in, and at what time
+        await bot.change_presence(activity = discord.Activity(type = discord.ActivityType.listening, name = user.name))
+        await asyncio.sleep(1) # this delay is so that Users can actually see the changed display of the Presence, instead of it changing back to "normal" instantly
+        await bot.change_presence(activity = discord.Activity(type = discord.ActivityType.custom)) # changes Presence back to "normal"
 
 ###############################################################################################################################################################################################################
 
