@@ -260,8 +260,8 @@ class RPG(commands.Cog):
                     if select.values[0] == "1": # chose to update Health stat, so increase hero's total health
 
                         hero_stat_currenthealth += 1
-                        hero_totalhealth += 10
-                        hero_currenthealth += 10
+                        #hero_totalhealth += 10
+                        #hero_currenthealth += 10
                         await interaction.response.send_message(f"You have increased your **Health** and it is now **{hero_currenthealth}**/**{hero_totalhealth}**", ephemeral=True)
                         
                     elif select.values[0] == "2": # chose to update Mana stat, so increase hero's total mana
@@ -346,8 +346,6 @@ class RPG(commands.Cog):
                                           \nStrength: **{monster_currentstrength}**
                                           \nAgility: **{monster_currentagility}**""")
                     
-                    print(f"First: {hero_currenthealth}")
-
 # # Zone 1 Battle section ############################################################################
 
                     #rpg_instance = RPG()
@@ -356,6 +354,8 @@ class RPG(commands.Cog):
                         def __init__(self, rpg_cog, monster_currentagility, hero_currentluck, monster_currenthealth, hero_currentmana, hero_currenthealth, monster_totalhealth, original_message=None):
                             super().__init__()
 
+                            if hero_currenthealth == 110 or hero_currenthealth == 120 and hero_stat_currenthealth != 2:
+                                hero_currenthealth -= 10
                             self.rpg_cog = rpg_cog  # store the rpg_cog as an attribute
                             self.monster_currentagility = monster_currentagility # used for hero's attack miss percentage
                             self.hero_currentluck = hero_currentluck # used for hero's attack critical hit likelihood percentage
@@ -363,6 +363,7 @@ class RPG(commands.Cog):
                             self.monster_totalhealth = monster_totalhealth
                             self.hero_currentmana = hero_currentmana
                             self.hero_currenthealth = hero_currenthealth
+                            print(f"efeffewf: {self.hero_currenthealth}")
                             self.original_message = original_message
                         
                         @discord.ui.select(
@@ -379,12 +380,12 @@ class RPG(commands.Cog):
                             select.disabled=True
 
                             if select.values[0] == "1": # chose to physical attack (so deal damage based on hero's Strength with the possibility of a critical hit or a miss)
-                                print(f"Here is where self.hero_currenthealth shows 110 instead of 100: {self.hero_currenthealth}")
+                                print(f"self.hero_currenthealth shows: {self.hero_currenthealth}")
+                                print(f"hero_currenthealth shows: {hero_currenthealth}")
 
                                 if self.hero_attack_hits(): # check if the hero's attack hits based on monster's agility
 
                                     damage = self.calculate_hero_damage() # calculate damage
-                                    self.monster_currenthealth = monster_currenthealth
                                     self.monster_currenthealth -= damage
 
                                     audio_possible_physical_attack = ['C:\IT\DiscordBot\Attack1.mp3', 'C:\IT\DiscordBot\Attack2.mp3', 'C:\IT\DiscordBot\Attack3.mp3', 'C:\IT\DiscordBot\Attack4.mp3', 'C:\IT\DiscordBot\Attack5.mp3']
@@ -449,7 +450,7 @@ class RPG(commands.Cog):
 
                             self.hero_is_critical_hit = False
 
-                            hero_base_damage = random.randint(hero_currentstrength + 10, hero_currentstrength + 10 * 2)  # calculate damage based on hero's current strength
+                            hero_base_damage = random.randint(hero_currentstrength, hero_currentstrength + 10)  # calculate damage based on hero's current strength
 
                             # Check for a critical hit based on player's luck
                             critical_hit_chance = min(1.0, self.hero_currentluck * 0.099) # adjust the multiplier (when luck reaches 10, 99% chance of critical hit)
@@ -494,16 +495,16 @@ class RPG(commands.Cog):
                             if self.monster_is_critical_hit:
                                 await ctx.author.send("Monster did Critical Hit!")
 
-                            print(f"Hero's health before getting attacked: {hero_currenthealth}")
-                            print(self.hero_currenthealth)
+                            print(f"hero_currenthealth before getting attacked: {hero_currenthealth}")
+                            print(f"self.hero_currenthealth before getting attacked: {self.hero_currenthealth}")
                             
                             self.hero_currenthealth = hero_currenthealth
-                            print(self.hero_currenthealth)
+
+                            print(f"self.hero_currenthealth after setting it to hero_currenthealth: {self.hero_currenthealth}")
 
                             self.hero_currenthealth -= monster_damage
 
-                            print(self.hero_currenthealth)
-                            print(f"Hero's health after getting attacked: {hero_currenthealth}")
+                            print(f"self.hero_currenthealth after getting attacked: {self.hero_currenthealth}")
 
                             if self.hero_currenthealth <= 0: # hero died (ran out of health)
 
@@ -511,8 +512,9 @@ class RPG(commands.Cog):
                                 # Handle defeat logic here if needed
 
                             else: # hero's turn
-
-                                print(hero_currenthealth)
+                                
+                                print(f"hero_currenthealth after setting it to self.hero_currenthealth: {hero_currenthealth}")
+                                      
                                 get_hero_actions_view = get_hero_actions(self.rpg_cog, self.monster_currentagility, self.hero_currentluck,
                                                                             self.monster_currenthealth, self.monster_totalhealth,
                                                                             self.hero_currentmana, self.hero_currenthealth,
@@ -539,9 +541,9 @@ class RPG(commands.Cog):
 
                             # Apply critical hit damage multiplier
                             if self.monster_is_critical_hit:
-                                print(f"Monster did Critical Hit (prep) with damageL {monster_base_damage}")
+                                print(f"Monster did Critical Hit (prep) with damage {monster_base_damage}")
                                 monster_base_damage *= 1.5 # adjust the multiplier for critical hit damage
-                                print(f"Monster did Critical Hit (modified) with damageL {monster_base_damage}")
+                                print(f"Monster did Critical Hit (modified) with damage {monster_base_damage}")
 
                             print(f"Monster did: {monster_base_damage} damage")
                             return monster_base_damage # damage dealt to hero
