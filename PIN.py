@@ -1,4 +1,4 @@
-[PIN](PIN.PNG)
+![PIN](PIN.PNG)
 
 attempts = 0 # initialize variable
 
