@@ -1,4 +1,4 @@
-![PIN.py Instructions](https://github.com/StudentLoans999/Python/blob/c4bc0ac7905e2232b78cf930f08165f72bd574ef/PIN.PNG)
+![PIN.py_Instructions](https://github.com/StudentLoans999/Python/blob/c4bc0ac7905e2232b78cf930f08165f72bd574ef/PIN.PNG)
 
 attempts = 0 # initialize variable
 
