@@ -1,4 +1,4 @@
-![PIN](PIN.PNG)
+![PIN.py Instructions](https://github.com/StudentLoans999/Python/PIN.PNG)
 
 attempts = 0 # initialize variable
 
