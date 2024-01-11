@@ -2,13 +2,13 @@ Please write a program which keeps asking the user for words. If the user types 
 
 # Write your solution here
 story = ""
-words_entered = set()
+words_entered = set() # the set stores unique words input by the user
 
 while True:
     code = input("Please type in a word: ")
-    if code == "end" or code in words_entered:
+    if code == "end" or code in words_entered: # user input "end" or a word they input previously, so end the loop
         break
     
-    words_entered.add(code)
-    story += code + " "
-print(story)
+    words_entered.add(code) # the user's input is added to the set
+    story += code + " " # add the user's input to the story
+print(story) # output all the user's inputs (story) when the loop ends
