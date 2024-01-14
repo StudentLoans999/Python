@@ -1,3 +1,12 @@
+Please modify the previous program (Width.py) so that it also asks for the height, and prints out a rectangle of hash characters accordingly.
+
+Sample output
+Width: 10
+Height: 3
+##########
+##########
+##########
+
 # Write your solution here
 width = int(input("Width: "))
 height = int(input("Height: "))
