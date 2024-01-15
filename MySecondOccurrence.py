@@ -22,24 +22,16 @@ The substring does not occur twice in the string.
 # Write your solution here
 string = input("Please type in a string: ")
 substring = input("Please type in a substring: ")
-first_occurrence = string.find(substring)
+first_occurrence = string.find(substring) # look for the first instance of the 'substring' input, in 'string'
 
-if first_occurrence != -1:
-    second_occurrence = string.find(substring, first_occurrence + len(substring))
+if first_occurrence != -1: # if found the first occurrence of substring in string
+    second_occurrence = string.find(substring, first_occurrence + len(substring)) # look for the second instance of the 'substring' input, in 'string', after the first occurrence, and to make sure it doesn't overlap, get the length of substring
     
-    if second_occurrence != -1:
+    if second_occurrence != -1: # if found the second occurrence of substring in string
         print(f"The second occurrence of the substring is at index {second_occurrence}.")
 
-    else:
+    else: # there isn't a second occurrence of substring in string
         print("The substring does not occur twice in the string.")
-else:
+        
+else: # there isn't a first occurrence of substring in string
     print("The substring does not occur twice in the string.")
-
-# Write your solution here
-word = input("Please type in a string: ")
-character = input("Please type in a character: ")
-index = word.find(character) # look for the first instance of the 'character' input, in 'word'
-
-while index != -1 and len(word) - index >= 3: # loops through all the instances where the 'character' is found in 'word', and when there are at least two more letters following it in the word  
-    print(word[index:index +3]) # output a substring of the first instance of the 'character' to two more characters that follow it
-    index = word.find(character, index + 1) # moves on to the next place in 'word' where 'character' is found (iterates through the loop)
