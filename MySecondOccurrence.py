@@ -35,3 +35,11 @@ if first_occurrence != -1:
 else:
     print("The substring does not occur twice in the string.")
 
+# Write your solution here
+word = input("Please type in a string: ")
+character = input("Please type in a character: ")
+index = word.find(character) # look for the first instance of the 'character' input, in 'word'
+
+while index != -1 and len(word) - index >= 3: # loops through all the instances where the 'character' is found in 'word', and when there are at least two more letters following it in the word  
+    print(word[index:index +3]) # output a substring of the first instance of the 'character' to two more characters that follow it
+    index = word.find(character, index + 1) # moves on to the next place in 'word' where 'character' is found (iterates through the loop)
