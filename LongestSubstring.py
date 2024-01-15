@@ -10,11 +10,11 @@ test
 # Write your solution here
 user_input = input("Please type in a string: ")
 string_length = len(user_input)
-letter = user_input[len(user_input) - 1:]
-position = len(user_input)
+letter = user_input[len(user_input) - 1:] # last letter
+position = len(user_input) # beginning position (at the end of the string)
 
-while string_length > 0:
-    letter = user_input[position - 1:]
+while string_length > 0: # loops through the length of the string
+    letter = user_input[position - 1:] # end of substring to the previous letter
     print(letter)
-    string_length -= 1
-    position -= 1
+    string_length -= 1 # to iterate through the loop
+    position -= 1# to get the previous letter of the string
