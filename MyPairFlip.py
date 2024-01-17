@@ -22,7 +22,7 @@ number = int(input("Please type in a number: "))
 first_integer = 2 # initialize the first number of the pair (make this one larger than the second integer in order to make it so that each pair of numbers is flipped) 
 second_integer = 1 # initialize the second number of the pair
 
-while first_integer <= number or second_integer <= number: # loop until either of the numbers of the pair are larger than 'number'
+while first_integer <= number or second_integer <= number: # loop until either of the numbers of the pair are larger than 'number' (so if user input 5, then the last number printed will be 5)
   
     if first_integer <= number: # checks if 'first_integer' (2) is less than or equal to 'number' and then output it if so
         print(first_integer)
