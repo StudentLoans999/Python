@@ -17,16 +17,20 @@ Sample output
                                                                                                                                                                                                                         
 # Write your solution here
 def chessboard(size): # create the function and adds a parameter that is an integer that defines how big to make the chessboard
+    i = 0 # initialize variable which is needed for "while" loop 
+
+    while i < size: # loops as many times as 'size'
+      
+        if i % 2 == 0: # if even row number
+            row = "10"*size # 'row' is created and it composed of a pattern of 10s one after another 'size' many times
+        
+        else: # if odd row number
+            row = "01"*size # 'row' is created and it composed of a pattern of 01s one after another 'size' many times
+          
+        # Remove extra characters at the end of the row
+        print(row[0:size])
+        i += 1 # iterate through "while" loop                                                                                                                                                                                                                        
                                                                                                                                                                                                                         
-    for a in range(size): # loops as many times as 'size' ; creates 'size' number of rows
-        character = '1' if a % 2 == 0 else '0' # makes character equal 1 if the row is even (so starts off at row 0, so 'character' starts off being 1) and equal 0 if row is odd
-
-        for b in range(size): # loops as many times as 'size' ; creates 'character' inside each 'size' number of rows
-            print(character, end='') # outputs 'character' one after another (without adding a line in between)
-            character = '1' if character == '0' else '0' # makes character equal 1 if it is '0' (so it started off as 1) and equal 0 if it was 1 ; flip flops 'character' between 1 and 0
-
-        print() # then moves to the next line for the next row
-
 # Testing the function
 if __name__ == "__main__":
-    chessboard(3)                                                                                                                                                                                                                        
+    chessboard(3)          
