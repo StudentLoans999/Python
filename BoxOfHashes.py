@@ -34,21 +34,22 @@ Sample output
 ##########
 
 # Write your solution here
-def line(length, string):
+def line(length, string): # first function
 
-    if len(string) > 0:
-        print(f"{length*string[0]}")
+    if len(string) > 0: # checks if 'string' is not empty
+        print(f"{length*string[0]}") # outputs the first character in 'string' 'length' many times
 
-    else:
-        string = "*"
-        print(f"{length*string}")
+    else: # 'string' is empty
+        string = "*" # adds a character which will be outputted
+        print(f"{length*string}") # outputs the first character in 'string' 'length' many times
 
-def box_of_hashes(height):
-    while 0 < height:
-        length = 10
-        string = "#"
-        line(length, string)
-        height -= 1
+def box_of_hashes(height): # second function
+
+    while 0 < height: # loops 'height' many times ; creates 'height' many rows
+        length = 10 # sets 'length' of the row
+        string = "#" # sets the character that will be output in the row
+        line(length, string) # runs the line function with the two variables above put in as the parameters
+        height -= 1 # iterates over the loop
 
 # Testing the function
 if __name__ == "__main__":
