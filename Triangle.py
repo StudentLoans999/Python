@@ -44,7 +44,6 @@ def line(length, string): # first function
         string = "*" # adds a character which will be outputted
         print(f"{length*string}") # outputs the first character in 'string' 'length' many times
 
-
 # Write your solution here
 def triangle(height): # define function and assign it the parameter of 'height'
     rows = height # initialize new variable by assigning it to the parameter 'height'
