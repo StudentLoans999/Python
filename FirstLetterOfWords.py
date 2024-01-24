@@ -20,6 +20,6 @@ sentence = " " + sentence
 # Searching for indexes which are preceded by spaces
 index = 1
 while index < len(sentence): # loops through the whole string 'sentence' 
-    if sentence[index-1] == " " and sentence[index] != " ": # checks if the character before 'index' (1, so 0 the first character) is a space and if the character wehere 'index' (1) is, is not a space 
+    if sentence[index-1] == " " and sentence[index] != " ": # checks if the character before 'index' (1, so 0 the first character) is a space and if the character where 'index' (1) is, is not a space 
         print(sentence[index]) # output the character at 'index'
     index += 1 # to iterate through the whole 'sentence'
