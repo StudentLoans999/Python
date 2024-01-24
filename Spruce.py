@@ -19,33 +19,41 @@ a spruce!
 *********
     *
                                                                                                                                                   
-def line(length, string): # first function
-
-    if len(string) > 0: # checks if 'string' is not empty
-        print(f"{length*string[0]}") # outputs the first character in 'string' 'length' many times
-
-    else: # 'string' is empty
-        string = "*" # adds a character which will be outputted
-        print(f"{length*string}") # outputs the first character in 'string' 'length' many times
+def line(length, string): # function to print a line with repeated characters
+    if len(string) > 0:
+        print(f"{length * string[0]}") # if the string is not empty, print the first character in 'string' 'length' times
+    else:
+        string = "*" # if the string is empty, set it to "*" and print "*" 'length' times
+        print(f"{length * string}")
 
 
 # Write your solution here
-def spruce(height): # define function and assign it the parameter of 'height'
-    rows = height # initialize new variable by assigning it to the parameter 'height'
-    width = 1                                                                                                                                                  
-                                                                                                                                                  
-    while rows > 0: # loop until there are the number of rows input in the parameter 'height'
-      character = '#' # initialize new variable that will be output and will create the triangle shape
+def spruce(height):
+    rows = height
+    width = 1
+    original_spaces = height - width // 2 # store the initial number of leading spaces before the star in the first line of the spruce tree
 
-      while width <= height:
+    print("a spruce!")
+
+    while rows > 0: # to loop through the number input to create that many rows of the spruce tree
+
+        spaces = height - width // 2 # calculates the number of leading spaces to be printed before the stars in a particular line of the spruce tree (ensures that the leading spaces decrease as the width of the line increases) ; creates a pyramid-like shape for the spruce tree
         
-        print(f"{character*width}") # output the 'character' 'width' times
-        width += 1
+        stars = width # to increase the number of stars to print this time in the loop 
+
+        print(" " * spaces, end="") # print leading spaces but doesn't move on to the next line
+
         
-      rows -= 1 # iterates so that there are 'height' number of rows outputted
-      
-# You can test your function by calling it within the following block
+        line(stars, "*") # print as many stars as 'stars' which increases by two every time it loops (and then the next line starts)
+
+        width += 2 # increase the number of stars to print each loop
+        rows -= 1 # to loop through the total height of input to create that many rows of the spruce tree
+
+    print(" " * original_spaces, end="") # get the same number of spaces as the first line that was just a "*"
+    line(1, "*") # print out just one "*" in the same line to end the spruce tree
+
+# Testing the function
 if __name__ == "__main__":
     spruce(3)
     print()
-    spruce(5)      
+    spruce(5)
