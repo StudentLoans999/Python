@@ -19,7 +19,7 @@ a spruce!
 *********
     *
                                                                                                                                                   
-def line(length, string): # function to print a line with repeated characters
+def line(length : int, string : str): # function to print a line with repeated characters ( : int and : str are type hints)
     if len(string) > 0:
         print(f"{length * string[0]}") # if the string is not empty, print the first character in 'string' 'length' times
     else:
@@ -28,7 +28,7 @@ def line(length, string): # function to print a line with repeated characters
 
 
 # Write your solution here
-def spruce(height):
+def spruce(height) -> str: # (str is the return value of the function)
     rows = height
     width = 1
     original_spaces = height - width // 2 # store the initial number of leading spaces before the star in the first line of the spruce tree
