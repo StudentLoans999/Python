@@ -10,7 +10,7 @@ print(new_list)
 Sample output
 ['1.23', '0.33', '0.11', '3.45']
 
-def formatted(my_list: list): # function that returns the length of the shortest string in the given list 
+def formatted(my_list: list): # function that returns the integers in the list into floats rounded by two decimal places 
     new_list = [] # create an empty list
 
     for n in my_list: # loop through all the numbers in the given list
