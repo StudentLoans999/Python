@@ -23,4 +23,4 @@ def longest(my_list: list): # create a function that prints out the longest stri
 # Testing the function
 if __name__ == "__main__":
     strings = ["hi", "hiya", "hello", "howdydoody", "hi there"]
-    print(longest(strings))
+    print(longest(strings)) # howdydoody
