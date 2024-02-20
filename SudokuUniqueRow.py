@@ -20,12 +20,12 @@ Sample output
 True
 False
 
-def row_correct(sudoku: list, row_no: int) -> bool: # Returns True or False depending on if each number from 1 to 9 appears at most once in the row in the Sudoku board
+def row_correct(sudoku: list, row_no: int) -> bool: # Returns True or False depending on if each number from 1 to 9 appears at most once in the specified row in the Sudoku board
     row_values = sudoku[row_no] # initialize the row specified
 
     # Check if each number from 1 to 9 appears at most once in the row
     for i in range(1, 10): # iterates over the entire length of the row in the Sudoku board, but binding 'i' to 1-9
-        if row_values.count(i) > 1: # if this number has been repeated in the row, then return False (if )
+        if row_values.count(i) > 1: # if this number has been repeated in the row, then return False
             return False
 
     return True # return True if all the elements in the specified row are unique (excluding 0)
