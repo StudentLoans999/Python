@@ -1,4 +1,7 @@
-# A 'set' is a data structure that contains only unordered, non-interchangeable elements
+# A 'set' is a data structure that contains only unordered, non-interchangeable elements; each element must be immutable (hashable); a set is mutable
+# So this will throw an error
+example_0 = [1.5, {'a', 'b', 'c'}, 1.5]
+set(example_0)
 
 ## Different ways to creat a set; to define an empty set, you have to use set()
 
@@ -33,6 +36,24 @@ x = {'doo'}
 print(x)
 
 {'doo'} # output
+
+example_a = [1, 2, 2.0, '2']
+set(example_a)
+
+{1, 2, '2'} # output; 2 and 2.0 are evaluated as equivalent
+
+example_b = ('apple', (1, 2, 2, 2, 3), 2)
+set(example_b)
+
+{2, 'apple', (1, 2, 2, 2, 3)} # output; a tuple is immutable (hashable) so is distinct
+
+## Add to a set
+
+example_c = {'mother', 'hamster', 'father'}
+example_c.add('elderberries')
+example_c
+
+{'father', 'mother', 'elderberries', 'hamster'} # output
 
 ## intersection() - function that finds the elements that two sets have in common
 
@@ -88,3 +109,11 @@ print(set2 ^ set1)
 
 {1, 2, 3, 7, 8, 9} # output
 {1, 2, 3, 7, 8, 9} # same output for second print statement
+
+
+# A 'frozenset' is very similar to a 'set' except it is immutable
+
+example_d = [1.5, frozenset(['a', 'b', 'c']), 1.5]
+set(example_d)
+
+{1.5, frozenset({'b', 'a', 'c'})} # output
