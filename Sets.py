@@ -32,6 +32,7 @@ print(type(y))
 class 'set'
 class 'dict'
 
+
 x = {'doo'}
 print(x)
 
@@ -41,6 +42,7 @@ example_a = [1, 2, 2.0, '2']
 set(example_a)
 
 {1, 2, '2'} # output; 2 and 2.0 are evaluated as equivalent
+
 
 example_b = ('apple', (1, 2, 2, 2, 3), 2)
 set(example_b)
