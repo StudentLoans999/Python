@@ -1,3 +1,5 @@
+# A 'dictionary' is a data structure that consists of a collection of key-value pairs 
+
 ## Example of accessing a specific value in a dictionary
 my_dict = {'nums': [1, 2, 3],
           'abc': ['a', 'b', 'c']
