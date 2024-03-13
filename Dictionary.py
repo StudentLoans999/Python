@@ -1,5 +1,26 @@
 # A 'dictionary' is a data structure that consists of a collection of key-value pairs 
 
+## Different ways to create a dictionary
+zoo = {'pen_1': 'penguins',
+       'pen_2': 'zebras'
+}
+# or
+zoo = dict(pen_1='penguins',
+           pen_2='zebras',
+)
+# dict() allows you to do this:
+zoo = dict(
+          [
+           ['pen_1', 'penguins'],
+           ['pen_2', 'zebras'],
+          ]
+)
+
+zoo['pen_2]'
+
+# Output:
+'zebras'
+
 ## Example of accessing a specific value in a dictionary
 my_dict = {'nums': [1, 2, 3],
           'abc': ['a', 'b', 'c']
