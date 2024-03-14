@@ -184,3 +184,28 @@ a[:, 1:]
 
 [[2 3] # select all rows (: before the comma) and all columns starting from the second column onwards (1: after the comma)
  [5 6]]
+
+## Math operations
+a = np.array([(1, 2, 3), (4, 5, 6)])
+b = np.array([[1, 2, 3], [1, 2, 3]])
+
+print(a + b)
+print()
+print(a * b)
+
+[[2 4 6] # output
+ [5 7 9]]
+
+[[ 1  4  9]
+ [ 4 10 18]]
+
+
+a = np.array([(1, 2), (3, 4)]) # arrays are mutable but with certain limitations; an existing element can be changed
+a[1][1] = 100
+a
+
+[[  1   2] # output
+ [  3 100]]
+
+a[3] = 100 # but an array can't be lengthened or shortened so this will result in an error
+a
