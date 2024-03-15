@@ -51,6 +51,7 @@ dtype: object
 
 
 ### .iloc - integer-location based indexing for selection by position ###
+
 >>> mydict = [{'a': 1, 'b': 2, 'c': 3, 'd': 4},
 ...           {'a': 100, 'b': 200, 'c': 300, 'd': 400},
 ...           {'a': 1000, 'b': 2000, 'c': 3000, 'd': 4000}]
@@ -116,6 +117,7 @@ df.iloc[:, [True, False, True, False]] # indexing both axes With a boolean array
 
 
 ### .loc - Access a group of rows and columns by label(s) or a boolean array ###
+
 >>> df = pd.DataFrame([[1, 2], [4, 5], [7, 8]],
 ...                   index=['cobra', 'viper', 'sidewinder'],
 ...                   columns=['max_speed', 'shield'])
@@ -296,3 +298,147 @@ viper      mark ii          7       1
 
 
 ### .shape - Return a tuple representing the dimensionality of the DataFrame ###
+
+df = pd.DataFrame({'col1': [1, 2], 'col2': [3, 4]}) # returns number of rows and number of columns
+df.shape
+(2, 2) # output
+
+df = pd.DataFrame({'col1': [1, 2], 'col2': [3, 4], 
+                   'col3': [5, 6]})
+df.shape # returns number of rows and number of columns
+(2, 3) # output
+
+
+
+### .values - Return a Numpy representation of the DataFrame (axes labels will be removed) ###
+
+df = pd.DataFrame({'age':    [ 3,  29],
+                   'height': [94, 170],
+                   'weight': [31, 115]})
+df
+print()
+   age  height  weight # output
+0    3      94      31
+1   29     170     115
+
+df.dtypes
+age       int64
+height    int64
+weight    int64
+dtype: object
+print()
+
+df.values
+array([[  3,  94,  31],
+       [ 29, 170, 115]])
+
+df2 = pd.DataFrame([('parrot',   24.0, 'second'), # another example, but with mixed column types
+                    ('lion',     80.5, 1),
+                    ('monkey', np.nan, None)],
+                  columns=('name', 'max_speed', 'rank'))
+df2.dtypes
+name          object # output
+max_speed    float64
+rank          object
+dtype: object
+
+df2.values
+array([['parrot', 24.0, 'second'], # output
+       ['lion', 80.5, 1],
+       ['monkey', nan, None]], dtype=object)
+
+
+
+### .apply - Apply a function along an axis of the DataFrame ###
+
+df = pd.DataFrame([[4, 9]] * 3, columns=['A', 'B']) # df to be used for examples below
+df
+   A  B # output
+0  4  9
+1  4  9
+2  4  9
+
+df.apply(np.sqrt) # applying a square root function to the df
+     A    B # output
+0  2.0  3.0
+1  2.0  3.0
+2  2.0  3.0
+
+df.apply(np.sum, axis=0) # applying a sum function on the y-axis
+A    12 # output
+B    27
+dtype: int64
+
+df.apply(np.sum, axis=1) # applying a sum function on the x-axis
+0    13 # output
+1    13
+2    13
+dtype: int64
+
+df.apply(lambda x: [1, 2], axis=1) # returning a list-like will result in a Series
+0    [1, 2] # output
+1    [1, 2]
+2    [1, 2]
+dtype: object
+
+df.apply(lambda x: [1, 2], axis=1, result_type='expand') # passing result_type='expand' will expand list-like results to columns of a Dataframe
+   0  1 # output
+0  1  2
+1  1  2
+2  1  2
+
+df.apply(lambda x: pd.Series([1, 2], index=['foo', 'bar']), axis=1) # returning a Series inside the function is similar to passing result_type='expand'. The resulting column names will be the Series index
+   foo  bar # output
+0    1    2
+1    1    2
+2    1    2
+
+# passing result_type='broadcast' will ensure the same shape result, whether list-like or scalar is returned by the function, and broadcast it along the axis. The resulting column names will be the originals
+df.apply(lambda x: [1, 2], axis=1, result_type='broadcast')
+   A  B # output
+0  1  2
+1  1  2
+2  1  2
+
+
+
+### .copy - Make a copy of this object’s indices and data ###
+
+s = pd.Series([1, 2], index=["a", "b"]) # s to be used for example below
+s
+a    1 # output
+b    2
+
+s_copy = s.copy() # copies the entire series specified
+s_copy
+a    1 # output
+b    2
+
+
+
+### .describe - Generate descriptive statistics (options are: df.Series, df.datetime64, df.DataFrame, df.columnNameFromDataFrame ###
+
+s = pd.Series([1, 2, 3]) # gets stats about the Series
+s.describe()
+count    3.0 # output
+mean     2.0
+std      1.0
+min      1.0
+25%      1.5
+50%      2.0
+75%      2.5
+max      3.0
+
+
+
+### .drop - Drop specified labels from rows or columns or can remove rows or columns by specifying label names and corresponding axis or by directly specifying index or column names ###
+### (With a multi-index, different level labels can be removed by specifying the level ###
+
+
+df = pd.DataFrame(np.arange(12).reshape(3, 4), # df to be used for examples below
+                  columns=['A', 'B', 'C', 'D'])
+df
+   A  B   C   D # output
+0  0  1   2   3
+1  4  5   6   7
+2  8  9  10  11
