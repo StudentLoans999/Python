@@ -49,7 +49,8 @@ string              object
 dtype: object
 
 
-# .iloc - integer-location based indexing for selection by position
+
+### .iloc - integer-location based indexing for selection by position ###
 >>> mydict = [{'a': 1, 'b': 2, 'c': 3, 'd': 4},
 ...           {'a': 100, 'b': 200, 'c': 300, 'd': 400},
 ...           {'a': 1000, 'b': 2000, 'c': 3000, 'd': 4000}]
@@ -113,7 +114,8 @@ df.iloc[:, [True, False, True, False]] # indexing both axes With a boolean array
 2  1000  3000
 
 
-# .loc - Access a group of rows and columns by label(s) or a boolean array
+
+### .loc - Access a group of rows and columns by label(s) or a boolean array ###
 >>> df = pd.DataFrame([[1, 2], [4, 5], [7, 8]],
 ...                   index=['cobra', 'viper', 'sidewinder'],
 ...                   columns=['max_speed', 'shield'])
@@ -177,3 +179,120 @@ sidewinder          7       8
 cobra               1       2
 viper               4       5
 sidewinder    
+
+df.loc[['viper', 'sidewinder'], ['shield']] = 50 # sets a value for the rows specified at the column specified; the 'viper' and 'sidewinder' rows in the 'shield' column values are set to 50
+df
+            max_speed  shield # output
+cobra               1       2
+viper               4      50
+sidewinder          7      50
+
+df.loc['cobra'] = 10 # sets a value for an entire row; 'cobra' row is set to 10
+df
+            max_speed  shield # output
+cobra              10      10
+viper               4      50
+sidewinder          7      50
+
+df.loc[df['shield'] > 35] = 0 # sets a value for rows matching the condition; the 'shield' column values that are greater than 35 will be set to 0 
+df
+            max_speed  shield # output
+cobra              30      10
+viper               0       0
+sidewinder          0       0
+
+df.loc["viper", "shield"] += 5 # sets a value at the specified location intersect; where the 'viper' row and the 'shield' column intersect will be set to 5 more than what it was
+df
+            max_speed  shield # output
+cobra              30      10
+viper               0       5
+sidewinder          0       0
+
+# 'viper' from the original dataframe is being added on top of 'cobra' in this new dataframe, 'cobra' to' viper' and 'sidewinder' to 'sidewinder'
+shuffled_df = df.loc[["viper", "cobra", "sidewinder"]] # sets values by using a Series or a DataFrame, matching the index labels, not the index positions
+df.loc[:] += shuffled_df
+df
+            max_speed  shield # output
+cobra              60      20
+viper               0      10
+sidewinder          0       0
+
+
+# Getting values on a DataFrame with an index that has integer labels #
+df = pd.DataFrame([[1, 2], [4, 5], [7, 8]],
+                  index=[7, 8, 9], columns=['max_speed', 'shield'])
+df
+   max_speed  shield # output
+7          1       2
+8          4       5
+9          7       8
+
+df.loc[7:9] # slice with integer labels for rows (start and stop are included; gets the rows sepcified by the index's integer labels
+   max_speed  shield # output
+7          1       2
+8          4       5
+9          7       8
+
+
+# Getting values using a DataFrame with a MultiIndex; 'cobra', 'sidewinder' and 'viper' are all an index row (label) with sub-rows (index tuple) in it called 'mark i' and 'mark ii' 
+# Dataframe used for all the Getting values done below #
+tuples = [
+    ('cobra', 'mark i'), ('cobra', 'mark ii'),
+    ('sidewinder', 'mark i'), ('sidewinder', 'mark ii'),
+    ('viper', 'mark ii'), ('viper', 'mark iii')
+]
+index = pd.MultiIndex.from_tuples(tuples)
+values = [[12, 2], [0, 4], [10, 20],
+          [1, 4], [7, 1], [16, 36]]
+df = pd.DataFrame(values, columns=['max_speed', 'shield'], index=index) # 
+df
+                     max_speed  shield # output
+cobra      mark i           12       2
+           mark ii           0       4
+sidewinder mark i           10      20
+           mark ii           1       4
+viper      mark ii           7       1
+           mark iii         16      36
+
+df.loc['cobra'] # gets all the values from the index (single label) specified (returns a DataFrame); 'cobra' index
+         max_speed  shield # output
+mark i          12       2
+mark ii          0       4
+
+df.loc[('cobra', 'mark ii')] # gets all the values from the index and sub-index (single index tuple) specified (returns a Series); 'cobra' index and 'mark ii' sub-index
+max_speed    0 # output
+shield       4
+Name: (cobra, mark ii), dtype: int64
+
+df.loc['cobra', 'mark i'] # gets all the values from the index and sub-index (single label for row and column) specified (returns a Series); 'cobra' index and 'mark i' sub-index
+max_speed    12 # output
+shield        2
+Name: (cobra, mark i), dtype: int64
+
+df.loc[[('cobra', 'mark ii')]] # gets all the values from the index and sub-index (single tuple) specified (returns a DataFrame); 'cobra' index and 'mark ii' sub-index
+               max_speed  shield # output
+cobra mark ii          0       4
+
+df.loc[('cobra', 'mark i'), 'shield'] # gets the value from the index and sub-index (single tuple) with a column (single label) specified; where 'cobra' index and 'mark ii' sub-index intersect at the 'shield' column
+2 # output
+
+df.loc[('cobra', 'mark i'):'viper'] # gets all the values from the index and sub-index (single index tuple) specified to the single label specified (returns a DataFrame); 'cobra' index and 'mark i' sub-index sliced to 'viper' index rows
+                     max_speed  shield # output
+cobra      mark i           12       2
+           mark ii           0       4
+sidewinder mark i           10      20
+           mark ii           1       4
+viper      mark ii           7       1
+           mark iii         16      36
+
+df.loc[('cobra', 'mark i'):('viper', 'mark ii')] # gets all the values from the index and sub-index (single index tuple) specified to another single index tuple specified (returns a DataFrame); 'cobra' index and 'mark i' sub-index sliced to 'viper' index row, 'mark ii; subrow
+                    max_speed  shield # output
+cobra      mark i          12       2
+           mark ii          0       4
+sidewinder mark i          10      20
+           mark ii          1       4
+viper      mark ii          7       1
+
+
+
+### .shape - Return a tuple representing the dimensionality of the DataFrame ###
