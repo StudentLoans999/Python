@@ -434,7 +434,6 @@ max      3.0
 ### .drop - Drop specified labels from rows or columns or can remove rows or columns by specifying label names and corresponding axis or by directly specifying index or column names ###
 ### (With a multi-index, different level labels can be removed by specifying the level ###
 
-
 df = pd.DataFrame(np.arange(12).reshape(3, 4), # df to be used for examples below
                   columns=['A', 'B', 'C', 'D'])
 df
@@ -442,3 +441,387 @@ df
 0  0  1   2   3
 1  4  5   6   7
 2  8  9  10  11
+
+
+df.drop(['B', 'C'], axis=1) # drops columns 'B' and 'C', axis '1' is the columns (axis '0' is index labels); don't have to include 'axis' to get same output 
+   A   D # output
+0  0   3
+1  4   7
+2  8  11
+
+df.drop([0, 1]) # drops a row by index '0' and '1'
+   A  B   C   D # output
+2  8  9  10  11
+
+midx = pd.MultiIndex(levels=[['llama', 'cow', 'falcon'], # MultiIndex df to be used for examples below
+                             ['speed', 'weight', 'length']],
+                     codes=[[0, 0, 0, 1, 1, 1, 2, 2, 2],
+                            [0, 1, 2, 0, 1, 2, 0, 1, 2]])
+df = pd.DataFrame(index=midx, columns=['big', 'small'],
+                  data=[[45, 30], [200, 100], [1.5, 1], [30, 20],
+                        [250, 150], [1.5, 0.8], [320, 250],
+                        [1, 0.8], [0.3, 0.2]])
+df
+                big     small # output
+llama   speed   45.0    30.0
+        weight  200.0   100.0
+        length  1.5     1.0
+cow     speed   30.0    20.0
+        weight  250.0   150.0
+        length  1.5     0.8
+falcon  speed   320.0   250.0
+        weight  1.0     0.8
+        length  0.3     0.2
+
+df.drop(index=('falcon', 'weight')) # drops the specified row; 'falcon' index's 'weight' row
+                big     small # output
+llama   speed   45.0    30.0
+        weight  200.0   100.0
+        length  1.5     1.0
+cow     speed   30.0    20.0
+        weight  250.0   150.0
+        length  1.5     0.8
+falcon  speed   320.0   250.0
+        length  0.3     0.2
+
+df.drop(index='cow', columns='small') # drops the index and the column specified; 'cow' index and 'small' column
+                big # output
+llama   speed   45.0
+        weight  200.0
+        length  1.5
+falcon  speed   320.0
+        weight  1.0
+        length  0.3
+
+df.drop(index='length', level=1) # drops the specified index level; 'length; index at level '1'
+                big     small
+llama   speed   45.0    30.0
+        weight  200.0   100.0
+cow     speed   30.0    20.0
+        weight  250.0   150.0
+falcon  speed   320.0   250.0
+        weight  1.0     0.8
+
+
+
+### .groupby - splits the object, applies a function, and combines the results (used to group large amounts of data) ###
+
+df = pd.DataFrame({'Animal': ['Falcon', 'Falcon', # df used for example below
+                              'Parrot', 'Parrot'],
+                   'Max Speed': [380., 370., 24., 26.]})
+df
+   Animal  Max Speed # output
+0  Falcon      380.0
+1  Falcon      370.0
+2  Parrot       24.0
+3  Parrot       26.0
+
+df.groupby(['Animal']).mean() # groups the mean results by 'Animal'
+        Max Speed # output
+Animal
+Falcon      375.0
+Parrot       25.0
+
+arrays = [['Falcon', 'Falcon', 'Parrot', 'Parrot'], # MultiIndex df to be used for examples below
+          ['Captive', 'Wild', 'Captive', 'Wild']]
+index = pd.MultiIndex.from_arrays(arrays, names=('Animal', 'Type'))
+df = pd.DataFrame({'Max Speed': [390., 350., 30., 20.]},
+                  index=index)
+df
+                Max Speed # output
+Animal Type
+Falcon Captive      390.0
+       Wild         350.0
+Parrot Captive       30.0
+       Wild          20.0
+
+df.groupby(level=0).mean() # groups mean results by level '0' which is 'Animal'
+        Max Speed # output
+Animal
+Falcon      370.0
+Parrot       25.0
+
+df.groupby(level="Type").mean() # groups mean results by level 'Type'
+         Max Speed # output
+Type
+Captive      210.0
+Wild         185.0
+
+
+
+### .head - returns the first 'n' rows ###
+
+df = pd.DataFrame({'animal': ['alligator', 'bee', 'falcon', 'lion', # example df to be used for examples below
+                   'monkey', 'parrot', 'shark', 'whale', 'zebra']})
+df
+      animal # output
+0  alligator
+1        bee
+2     falcon
+3       lion
+4     monkey
+5     parrot
+6      shark
+7      whale
+8      zebra
+
+df.head() # returns the first 5 rows (default), since no number was specified
+      animal # output
+0  alligator
+1        bee
+2     falcon
+3       lion
+4     monkey
+
+df.head(3) # returns the first 3 rows
+      animal # output
+0  alligator
+1        bee
+2     falcon
+
+df.head(-3) # returns all the rows except the last 3 rows
+      animal # output
+0  alligator
+1        bee
+2     falcon
+3       lion
+4     monkey
+5     parrot
+
+
+
+### .info - prints a concise summary of a DataFrame ###
+
+int_values = [1, 2, 3, 4, 5] # df to be used for example below
+text_values = ['alpha', 'beta', 'gamma', 'delta', 'epsilon']
+float_values = [0.0, 0.25, 0.5, 0.75, 1.0]
+df = pd.DataFrame({"int_col": int_values, "text_col": text_values,
+                  "float_col": float_values})
+df
+    int_col text_col  float_col # output
+0        1    alpha       0.00
+1        2     beta       0.25
+2        3    gamma       0.50
+3        4    delta       0.75
+4        5  epsilon       1.00
+
+df.info() # returns the full summary about the df
+<class 'pandas.core.frame.DataFrame'> # output
+RangeIndex: 5 entries, 0 to 4
+Data columns (total 3 columns):
+ #   Column     Non-Null Count  Dtype
+---  ------     --------------  -----
+ 0   int_col    5 non-null      int64
+ 1   text_col   5 non-null      object
+ 2   float_col  5 non-null      float64
+dtypes: float64(1), int64(1), object(1)
+memory usage: 248.0+ bytes
+
+df.info(verbose=False) # returns summary without the per column info
+<class 'pandas.core.frame.DataFrame'> # output
+RangeIndex: 5 entries, 0 to 4
+Columns: 3 entries, int_col to float_col
+dtypes: float64(1), int64(1), object(1)
+memory usage: 248.0+ bytes
+
+df = pd.DataFrame({ # df for example below
+    'Column_1': np.random.choice(['a', 'b', 'c'], 5),
+    'Column_2': np.random.choice(['a', 'b', 'c'], 5),
+    'Column_3': np.random.choice(['a', 'b', 'c'], 5)})
+df
+      Column_1 Column_2 Column_3 # output
+0        c        c        b
+1        b        a        a
+2        b        c        b
+3        c        a        a
+4        a        a        a
+
+df.info() # returns the full summary about the df
+<class 'pandas.core.frame.DataFrame'> # output
+RangeIndex: 5 entries, 0 to 4
+Data columns (total 3 columns):
+ #   Column    Non-Null Count  Dtype 
+---  ------    --------------  ----- 
+ 0   Column_1  5 non-null      object
+ 1   Column_2  5 non-null      object
+ 2   Column_3  5 non-null      object
+dtypes: object(3)
+memory usage: 248.0+ bytes
+None
+
+
+
+### .isna - returns a boolean same-sized object indicating if the values are NA; NA values (None or numpy.NaN) get mapped to True values and the rest are False (even empty strings or numpy.inf) ###
+
+df = pd.DataFrame(dict(age=[5, 6, np.nan], # df to be used for example below
+                       born=[pd.NaT, pd.Timestamp('1939-05-27'),
+                             pd.Timestamp('1940-04-25')],
+                       name=['Alfred', 'Batman', ''],
+                       toy=[None, 'Batmobile', 'Joker']))
+df
+   age       born    name        toy # output
+0  5.0        NaT  Alfred       None
+1  6.0 1939-05-27  Batman  Batmobile
+2  NaN 1940-04-25              Joker
+
+df.isna() # returns same-sized df with NA values marked as True
+     age   born   name    toy # output
+0  False   True  False   True
+1  False  False  False  False
+2   True  False  False  False
+
+ser = pd.Series([5, 6, np.nan]) # series to be used for example below
+ser
+0    5.0 # output
+1    6.0
+2    NaN
+dtype: float64
+
+ser.isna() # returns same-sized series with NA value marked as True
+0    False # output
+1    False
+2     True
+dtype: bool
+
+
+
+### .aort_values - prints a concise summary of a DataFrame ###
+
+df = pd.DataFrame({ # df to be used for examples below
+    'col1': ['A', 'A', 'B', np.nan, 'D', 'C'],
+    'col2': [2, 1, 9, 8, 7, 4],
+    'col3': [0, 1, 9, 4, 2, 3],
+    'col4': ['a', 'B', 'c', 'D', 'e', 'F']
+})
+df
+  col1  col2  col3 col4 # output
+0    A     2     0    a
+1    A     1     1    B
+2    B     9     9    c
+3  NaN     8     4    D
+4    D     7     2    e
+5    C     4     3    F
+
+df.sort_values(by=['col1']) # sorts df by 'col1'
+  col1  col2  col3 col4 # output
+0    A     2     0    a
+1    A     1     1    B
+2    B     9     9    c
+5    C     4     3    F
+4    D     7     2    e
+3  NaN     8     4    D
+
+df.sort_values(by=['col1', 'col2']) # sorts df by 'col1' and 'col2'
+  col1  col2  col3 col4 # output
+1    A     1     1    B
+0    A     2     0    a
+2    B     9     9    c
+5    C     4     3    F
+4    D     7     2    e
+3  NaN     8     4    D
+
+df.sort_values(by='col1', ascending=False) # sorts df by 'col1' descending
+  col1  col2  col3 col4 # output
+4    D     7     2    e
+5    C     4     3    F
+2    B     9     9    c
+0    A     2     0    a
+1    A     1     1    B
+3  NaN     8     4    D
+
+df.sort_values(by='col1', ascending=False, na_position='first') # sorts df by 'col1' descending and 'NA's first
+  col1  col2  col3 col4 # output
+3  NaN     8     4    D
+4    D     7     2    e
+5    C     4     3    F
+2    B     9     9    c
+0    A     2     0    a
+1    A     1     1    B
+
+df = pd.DataFrame({ # df for example below
+    'Names': ['John', 'alice', 'Bob', 'Mary', 'ALICE', 'bob', 'JOHN']
+})
+df
+   Names # output
+0   John
+1  alice
+2    Bob
+3   Mary
+4  ALICE
+5    bob
+6   JOHN
+
+sorted_df = df.sort_values(by='Names', key=lambda col: col.str.lower()) # sorts df by 'Names' and with the key function of lowercase first
+   Names # output
+1  alice
+4  ALICE
+2    Bob
+5    bob
+3   Mary
+0   John
+6   JOHN
+
+sorted_df = df.sort_values(by='Names') # sorts df by 'Names' (the default sorting behavior is case sensitive, so capitals first)
+   Names # output
+2    Bob
+5    bob
+0   John
+6   JOHN
+3   Mary
+1  alice
+4  ALICE
+
+
+
+### .value_counts - returns a Series containing the frequency of each distinct row in the DataFrame ###
+
+df = pd.DataFrame({'num_legs': [2, 4, 4, 6], # df for examples below
+                   'num_wings': [2, 0, 0, 0]},
+                  index=['falcon', 'dog', 'cat', 'ant'])
+df
+        num_legs  num_wings # output
+falcon         2          2
+dog            4          0
+cat            4          0
+ant            6          0
+
+df.value_counts() # returns a df listing out the distinct rows and adds a column at the end detailing how many in the original df there is of that row
+num_legs  num_wings # output
+4         0            2
+2         2            1
+6         0            1
+Name: count, dtype: int64
+
+df.value_counts(sort=False) # returns the value counts unsorted 
+num_legs  num_wings # output
+2         2            1
+4         0            2
+6         0            1
+
+df.value_counts(ascending=True)  # returns the value counts sorted by ascending 
+num_legs  num_wings # outp;ut
+2         2            1
+6         0            1
+4         0            2
+
+df.value_counts(normalize=True)  # returns the value counts normalized (proportions rather than frequencies) 
+num_legs  num_wings # output
+4         0            0.50
+2         2            0.25
+6         0            0.25
+Name: proportion, dtype: float64
+
+df = pd.DataFrame({'first_name': ['John', 'Anne', 'John', 'Beth'], # df used for examples below
+                   'middle_name': ['Smith', pd.NA, pd.NA, 'Louise']})
+df
+  first_name middle_name # output
+0       John       Smith
+1       Anne        <NA>
+2       John        <NA>
+3       Beth      Louise
+
+df.value_counts() # returns the value counts (without the 'NA' values
+first_name  middle_name # output
+Beth        Louise         1
+John        Smith          1
+
