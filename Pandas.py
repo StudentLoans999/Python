@@ -550,6 +550,153 @@ Captive      210.0
 Wild         185.0
 
 
+clothes = pd.DataFrame({'type': ['pants', 'shirt', 'shirt', 'pants', 'shirt', 'pants'], # df for examples below
+                       'color': ['red', 'blue', 'green', 'blue', 'green', 'red'],
+                       'price_usd': [20, 35, 50, 40, 100, 75],
+                       'mass_g': [125, 440, 680, 200, 395, 485]})
+clothes
+   color  mass_g  price_usd   type # output
+0    red     125         20  pants
+1   blue     440         35  shirt
+2  green     680         50  shirt
+3   blue     200         40  pants
+4  green     395        100  shirt
+5    red     485         75  pants
+
+grouped = clothes.groupby('type') # groups the df by 'type' and gets the mean for each
+grouped.mean()
+       mass_g  price_usd # output
+type                    
+pants   270.0  45.000000
+shirt   505.0  61.666667
+
+clothes.groupby(['type', 'color']).min() # # groups the df by 'type' and 'color' and gets the min for each
+             mass_g  price_usd # output
+type  color                   
+pants blue      200         40
+      red       125         20
+shirt blue      440         35
+      green     395         50
+
+clothes.groupby(['type', 'color']).size() # groups the df by 'type' and 'color' and returns the number of observations there are in each group
+type   color # output
+pants  blue     1
+       red      2
+shirt  blue     1
+       green    2
+
+
+
+### .agg - applies multiple functions to a DataFrame at the same time ###
+
+clothes = pd.DataFrame({'type': ['pants', 'shirt', 'shirt', 'pants', 'shirt', 'pants'], # df for examples below
+                       'color': ['red', 'blue', 'green', 'blue', 'green', 'red'],
+                       'price_usd': [20, 35, 50, 40, 100, 75],
+                       'mass_g': [125, 440, 680, 200, 395, 485]})
+clothes
+   color  mass_g  price_usd   type # output
+0    red     125         20  pants
+1   blue     440         35  shirt
+2  green     680         50  shirt
+3   blue     200         40  pants
+4  green     395        100  shirt
+5    red     485         75  pants
+
+clothes[['mass_g', 'price_usd']].agg(['sum', 'mean']) # applies sum() and mean() functions to 'mass_g" and 'price_usd' columns 
+   mass_g  price_usd # output
+sum 2325.0 320.000000
+mean 387.5 53.333333
+
+clothes.agg({'price_usd': 'sum', # applies sum() to 'price_usd' and applies mean() and median() functions to 'mass_g"
+            'mass_g': ['mean', 'median']
+            })
+   price_usd  mass_g # output
+sum 320.0      NaN
+mean NaN       387.5
+median NaN     417.5
+
+clothes[['price_usd', 'mass_g']].agg(['sum', 'mean'], axis=1) # applies the sum() and mean() functions across axis 1 (instead of applying the functions down each column, they’re applied over each row)
+   sum  mean # output
+0 145.0 72.5
+1 475.0 237.5
+2 730.0 365.0
+3 240.0 120.0
+4 495.0 247.5
+5 560.0 280.0
+
+## groupby() with agg()
+
+clothes.groupby('color').agg({'price_usd': ['mean', 'max'], # groups by 'color' then each of the groups has the mean() and max() functions applied to them at the 'price_usd' and 'mass_g' columns
+                             'mass_g': ['mean', 'max']})
+      price_usd      mass_g # output     
+           mean  max   mean  max
+color                           
+blue       37.5   40  320.0  440
+green      75.0  100  537.5  680
+red        47.5   75  305.0  485
+
+## MultiIndex
+
+grouped = clothes.groupby(['color', 'type']).agg(['mean', 'min']) # df to be used for examples below
+grouped
+            mass_g      price_usd # output    
+              mean  min      mean min
+color type                           
+blue  pants  200.0  200      40.0  40
+      shirt  440.0  440      35.0  35
+green shirt  537.5  395      75.0  50
+red   pants  305.0  125      47.5  20
+
+grouped.index # returns a MultiIndex object containing info about the row indices
+MultiIndex(levels=[['blue', 'green', 'red'], ['pants', 'shirt']], # output
+           labels=[[0, 0, 1, 2], [0, 1, 1, 0]],
+           names=['color', 'type'])
+
+grouped.columns # returns a MultiIndex object containing info about the column indices
+MultiIndex(levels=[['mass_g', 'price_usd'], ['mean', 'min']], # output
+           labels=[[0, 0, 1, 1], [0, 1, 0, 1]])
+
+grouped.loc[:, 'price_usd'] # selects a first-level (top) column; gets all the rows and then just the 'price_usd' column 
+             mean  min # output
+color type            
+blue  pants  40.0   40
+      shirt  35.0   35
+green shirt  75.0   50
+red   pants  47.5   20
+
+grouped.loc[:, ('price_usd', 'min')] # selects a second-level (bottom) column; gets all the rows and then just the 'price_usd' column and only the 'min' values
+color  type # output
+blue   pants    40
+       shirt    35
+green  shirt    50
+red    pants    20
+Name: (price_usd, min), dtype: int64
+
+grouped.loc['blue', :] # selects a first-level (left-most) row; gets all the columns and then just the 'blue' row 
+      mass_g      price_usd # output    
+        mean  min      mean min
+type                           
+pants  200.0  200      40.0  40
+shirt  440.0  440      35.0  35
+
+grouped.loc[('green', 'shirt'), :] # selects a second-level (right-most) row; gets all the columns and then just the 'green' and 'shirt' row
+mass_g     mean    537.5 # output
+           min     395.0
+price_usd  mean     75.0
+           min      50.0
+Name: (green, shirt), dtype: float64
+
+grouped.loc[('blue', 'shirt'), ('mass_g', 'mean')] # selects a second-level (right-most) row; gets all the columns and then just the 'blue' and 'shirt' row and only the value where 'mass_g' intersects 'mean'
+440.0 # output
+
+clothes.groupby(['color', 'type'], as_index=False).mean() # remove the row MultiIndex from groupby result by doing 'as_index=False'
+   color   type  mass_g  price_usd # output
+0   blue  pants   200.0       40.0
+1   blue  shirt   440.0       35.0
+2  green  shirt   537.5       75.0
+3    red  pants   305.0       47.5
+
+
 
 ### .head - returns the first 'n' rows ###
 
@@ -978,3 +1125,157 @@ df.loc[mask, 'planet']
 7    Neptune
 Name: planet, dtype: object
 
+
+## Complex logical statements - '|' is 'or', '&' is 'and', and '~' is 'not'
+
+mask = (df['moons'] < 10) | (df['moons'] > 50) # gets just the mask where 'moons' values are less than 10 or greater than 50
+mask
+0     True # output
+1     True
+2     True
+3     True
+4     True
+5     True
+6    False
+7    False
+
+df[mask] # applies the mask to the df
+ moons   planet  radius_km # output
+0      0  Mercury       2440
+1      0    Venus       6052
+2      1    Earth       6371
+3      2     Mars       3390
+4     80  Jupiter      69911
+5     83   Saturn      58232
+
+mask = (df['moons'] > 20) & ~(df['moons'] == 80) & ~(df['radius_km'] < 50000) # applies the mask where 'moons' values are greater than 20 and are not 80 and 'radius_km' values are not less than 50000
+df[mask]
+   moons  planet  radius_km # output
+5     83  Saturn      58232
+
+
+
+### .concat - combines data either by adding it horizontally as new columns for existing rows, or vertically as new rows for existing columns; 'axis 0' is rows (vertical) and 'axis 1' is columns (horizontal) ###
+
+data1 = {'planet': ['Mercury', 'Venus', 'Earth', 'Mars'], # first df to be used for examples below
+        'radius_km': [2440, 6052, 6371, 3390],
+        'moons': [0, 0, 1, 2],
+       }
+df1 = pd.DataFrame(data1)
+df1
+   planet  radius_km  moons # output
+0  Mercury       2440      0
+1    Venus       6052      0
+2    Earth       6371      1
+3     Mars       3390      2
+
+data2 = {'planet': ['Jupiter', 'Saturn', 'Uranus', 'Neptune'], # second df to be used for examples below
+        'radius_km': [69911, 58232, 25362, 24622],
+        'moons': [80, 83, 27, 14],
+       }
+df2 = pd.DataFrame(data2)
+df2
+    planet  radius_km  moons # output
+0  Jupiter      69911     80
+1   Saturn      58232     83
+2   Uranus      25362     27
+3  Neptune      24622     14
+
+df3 = pd.concat([df1, df2], axis=0) # inserts df2 to df1 by combining the data vertically
+df3
+    planet  radius_km  moons # output
+0  Mercury       2440      0
+1    Venus       6052      0
+2    Earth       6371      1
+3     Mars       3390      2
+0  Jupiter      69911     80
+1   Saturn      58232     83
+2   Uranus      25362     27
+3  Neptune      24622     14
+
+df3 = df3.reset_index(drop=True) # restart the index (drop=True because otherwise a new index column would be added) 
+df3
+    planet  radius_km  moons # output
+0  Mercury       2440      0
+1    Venus       6052      0
+2    Earth       6371      1
+3     Mars       3390      2
+4  Jupiter      69911     80
+5   Saturn      58232     83
+6   Uranus      25362     27
+7  Neptune      24622     14
+
+
+
+### .merge - joins two DataFrames together by using keys (shared points of reference - what to match on); it only combines data by extending along axis 1 horizontally ###
+## Joins: Inner (only the keys that are in both dataframes get included in the merge); Outer (all of the keys from both dataframes get included in the merge);
+##        Left (all of the keys in the left dataframe are included, even if they aren't in the right dataframe); Right (all the keys in the right dataframe are included, even if they aren't in the left dataframe)
+# uses the dataframes from above #
+
+data4 = { # df used for examples below
+    'planet': ['Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Janssen', 'Tadmor'],
+    'type': ['terrestrial', 'terrestrial', 'gas giant', 'gas giant', 'ice giant', 'ice giant', 'super earth', 'gas giant'],
+    'rings': ['no', 'no', 'yes', 'yes', 'yes', 'yes', 'no', 'None'],
+    'mean_temp_c': ['15.0', '-65.0', '-110.0', '-140.0', '-195.0', '-200.0', 'NaN', 'NaN'],
+    'magnetic_field': ['yes', 'no', 'yes', 'yes', 'yes', 'yes', 'None', 'None'],
+    'life': [1, 0, 0, 0, 0, 0, 1, 1]
+}
+df4 = pd.DataFrame(data4)
+df4
+    planet          type rings mean_temp_c magnetic_field  life # output
+0    Earth  terrestrial    no        15.0            yes     1
+1     Mars  terrestrial    no       -65.0             no     0
+2  Jupiter     gas giant   yes      -110.0            yes     0
+3   Saturn     gas giant   yes      -140.0            yes     0
+4   Uranus     ice giant   yes      -195.0            yes     0
+5  Neptune     ice giant   yes      -200.0            yes     0
+6  Janssen   super earth    no         NaN           None     1
+7   Tadmor     gas giant  None         NaN           None     1
+
+inner = pd.merge(df3, df4, on='planet', how='inner') # inner merges 'df3' and 'df4' on the key 'planet'; only brings in the rows from both 'df's that share the same values in the 'planet' column
+inner
+    planet  radius_km  moons          type rings mean_temp_c magnetic_field  life # output
+0    Earth       6371      1  terrestrial    no        15.0            yes      1
+1     Mars       3390      2  terrestrial    no       -65.0             no      0
+2  Jupiter      69911     80     gas giant   yes      -110.0            yes     0
+3   Saturn      58232     83     gas giant   yes      -140.0            yes     0
+4   Uranus      25362     27     ice giant   yes      -195.0            yes     0
+5  Neptune      24622     14     ice giant   yes      -200.0            yes     0   
+
+outer = pd.merge(df3, df4, on='planet', how='outer') # outer merges 'df3' and 'df4' on the key 'planet'; brings in all the rows from both 'df's
+outer
+     planet  radius_km  moons          type rings mean_temp_c magnetic_field  life # output
+0   Mercury     2440.0    0.0           NaN   NaN         NaN            NaN     NaN
+1     Venus     6052.0    0.0           NaN   NaN         NaN            NaN     NaN
+2     Earth     6371.0    1.0  terrestrial    no        15.0            yes       1.0   
+3      Mars     3390.0    2.0  terrestrial    no       -65.0             no       0.0     
+4   Jupiter    69911.0   80.0     gas giant   yes      -110.0            yes      0.0   
+5    Saturn    58232.0   83.0     gas giant   yes      -140.0            yes      0.0
+6    Uranus    25362.0   27.0     ice giant   yes      -195.0            yes      0.0
+7   Neptune    24622.0   14.0     ice giant   yes      -200.0            yes      0.0
+8   Janssen        NaN    NaN   super earth    no         NaN           None      1.0
+9    Tadmor        NaN    NaN     gas giant  None         NaN           None      1.0   
+
+left = pd.merge(df3, df4, on='planet', how='left') # left merges 'df3' and 'df4' on the key 'planet'; brings in all the rows from left df (df3) and only the rows in the right df that exist in the left df too
+left
+     planet  radius_km  moons          type rings mean_temp_c magnetic_field  life # output
+0   Mercury       2440      0           NaN   NaN         NaN            NaN     NaN   
+1     Venus       6052      0           NaN   NaN         NaN            NaN     NaN
+2     Earth       6371      1  terrestrial    no        15.0            yes      1.0   
+3      Mars       3390      2  terrestrial    no       -65.0             no      0.0   
+4   Jupiter      69911     80     gas giant   yes      -110.0            yes     0.0   
+5    Saturn      58232     83     gas giant   yes      -140.0            yes     0.0   
+6    Uranus      25362     27     ice giant   yes      -195.0            yes     0.0   
+7   Neptune      24622     14     ice giant   yes      -200.0            yes     0.0   
+
+right = pd.merge(df3, df4, on='planet', how='right') # right merges 'df3' and 'df4' on the key 'planet'; brings in all the rows from right df (df4) and only the rows in the left df that exist in the right df too
+right
+     planet  radius_km  moons          type rings mean_temp_c magnetic_field  life # output
+0     Earth     6371.0    1.0  terrestrial    no        15.0            yes     1   
+1      Mars     3390.0    2.0  terrestrial    no       -65.0             no     0   
+2   Jupiter    69911.0   80.0     gas giant   yes      -110.0            yes    0   
+3    Saturn    58232.0   83.0     gas giant   yes      -140.0            yes    0   
+4    Uranus    25362.0   27.0     ice giant   yes      -195.0            yes    0   
+5   Neptune    24622.0   14.0     ice giant   yes      -200.0            yes    0   
+6   Janssen        NaN    NaN   super earth    no         NaN           None    1   
+7    Tadmor        NaN    NaN     gas giant  None         NaN           None    1
