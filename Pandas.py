@@ -332,6 +332,7 @@ df.values
 array([[  3,  94,  31],
        [ 29, 170, 115]])
 
+
 df2 = pd.DataFrame([('parrot',   24.0, 'second'), # another example, but with mixed column types
                     ('lion',     80.5, 1),
                     ('monkey', np.nan, None)],
@@ -442,7 +443,6 @@ df
 1  4  5   6   7
 2  8  9  10  11
 
-
 df.drop(['B', 'C'], axis=1) # drops columns 'B' and 'C', axis '1' is the columns (axis '0' is index labels); don't have to include 'axis' to get same output 
    A   D # output
 0  0   3
@@ -452,6 +452,7 @@ df.drop(['B', 'C'], axis=1) # drops columns 'B' and 'C', axis '1' is the columns
 df.drop([0, 1]) # drops a row by index '0' and '1'
    A  B   C   D # output
 2  8  9  10  11
+
 
 midx = pd.MultiIndex(levels=[['llama', 'cow', 'falcon'], # MultiIndex df to be used for examples below
                              ['speed', 'weight', 'length']],
@@ -521,6 +522,7 @@ df.groupby(['Animal']).mean() # groups the mean results by 'Animal'
 Animal
 Falcon      375.0
 Parrot       25.0
+
 
 arrays = [['Falcon', 'Falcon', 'Parrot', 'Parrot'], # MultiIndex df to be used for examples below
           ['Captive', 'Wild', 'Captive', 'Wild']]
@@ -624,6 +626,7 @@ Columns: 3 entries, int_col to float_col
 dtypes: float64(1), int64(1), object(1)
 memory usage: 248.0+ bytes
 
+
 df = pd.DataFrame({ # df for example below
     'Column_1': np.random.choice(['a', 'b', 'c'], 5),
     'Column_2': np.random.choice(['a', 'b', 'c'], 5),
@@ -685,7 +688,7 @@ dtype: bool
 
 
 
-### .aort_values - prints a concise summary of a DataFrame ###
+### .sort_values - prints a concise summary of a DataFrame ###
 
 df = pd.DataFrame({ # df to be used for examples below
     'col1': ['A', 'A', 'B', np.nan, 'D', 'C'],
@@ -737,6 +740,7 @@ df.sort_values(by='col1', ascending=False, na_position='first') # sorts df by 'c
 2    B     9     9    c
 0    A     2     0    a
 1    A     1     1    B
+
 
 df = pd.DataFrame({ # df for example below
     'Names': ['John', 'alice', 'Bob', 'Mary', 'ALICE', 'bob', 'JOHN']
@@ -811,6 +815,7 @@ num_legs  num_wings # output
 6         0            0.25
 Name: proportion, dtype: float64
 
+
 df = pd.DataFrame({'first_name': ['John', 'Anne', 'John', 'Beth'], # df used for examples below
                    'middle_name': ['Smith', pd.NA, pd.NA, 'Louise']})
 df
@@ -820,8 +825,81 @@ df
 2       John        <NA>
 3       Beth      Louise
 
-df.value_counts() # returns the value counts (without the 'NA' values
+df.value_counts() # returns the value counts (without the 'NA' values)
 first_name  middle_name # output
 Beth        Louise         1
 John        Smith          1
 
+df.value_counts(dropna=False) # returns the value counts with the 'NA' values
+first_name  middle_name #output
+Anne        NaN            1
+Beth        Louise         1
+John        Smith          1
+            NaN            1
+
+df.value_counts("first_name") # returns the value counts of the 'first_name' column
+first_name # output
+John    2
+Anne    1
+Beth    1
+
+
+
+### .mask - replaces values where the condition is True ###
+### .where - replaces values where the condition is False ###
+
+s = pd.Series(range(5)) # series to be used for examples below
+s
+0    0 # output
+1    1
+2    2
+3    3
+4    4
+
+s.where(s > 0) # replaces values that are not greater than 0 to NaN
+0    NaN # output
+1    1.0
+2    2.0
+3    3.0
+4    4.0
+
+s.mask(s > 0) # replaces values that are greater than 0 to NaN
+0    0.0 # output
+1    NaN
+2    NaN
+3    NaN
+4    NaN
+
+s.where(s > 1, 10) # replaces values that are not greater than 1 with 10
+0    10 # output
+1    10
+2    2
+3    3
+4    4
+
+s.mask(s > 1, 10) # replaces values that are  greater than 1 with 10
+0     0 # output
+1     1
+2    10
+3    10
+4    10
+
+
+df = pd.DataFrame(np.arange(10).reshape(-1, 2), columns=['A', 'B']) # df used for example below; creates a df with 10 elements and 2 columns with automatic number of rows
+# ('-1' rows means automatically calculate the number of rows based on the total number of elements '10' and and the specified number of columns '2')  
+df
+   A  B # output
+0  0  1
+1  2  3
+2  4  5
+3  6  7
+4  8  9
+
+m = df % 3 == 0
+df.where(m, -df) # replaces values that are not divisible by 3 with its negative version
+   A  B # output
+0  0 -1
+1 -2  3
+2 -4 -5
+3  6 -7
+4 -8  9
