@@ -1053,7 +1053,7 @@ df.where(m, -df) # replaces values that are not divisible by 3 with its negative
 
 
 
-### Boolean Masking/Indexing - used to overlay a Boolean grid onto a DataDrame's index in order to select only the values in the dataframe that align with the True values of the grid ###
+### Boolean Masking/Indexing - used to overlay a Boolean grid onto a DataDrame's index in order to select only the values in the dataframe that align with the True values of the grid; used to filter data in a df ###
 
 data = {'planet': ['Mercury', 'Venus', 'Earth', 'Mars', # df to be used for examples below
                    'Jupiter', 'Saturn', 'Uranus', 'Neptune'],
