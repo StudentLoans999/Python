@@ -903,3 +903,78 @@ df.where(m, -df) # replaces values that are not divisible by 3 with its negative
 2 -4 -5
 3  6 -7
 4 -8  9
+
+
+
+### Boolean Masking/Indexing - used to overlay a Boolean grid onto a DataDrame's index in order to select only the values in the dataframe that align with the True values of the grid ###
+
+data = {'planet': ['Mercury', 'Venus', 'Earth', 'Mars', # df to be used for examples below
+                   'Jupiter', 'Saturn', 'Uranus', 'Neptune'],
+       'radius_km': [2440, 6052, 6371, 3390, 69911, 58232,
+                     25362, 24622],
+       'moons': [0, 0, 1, 2, 80, 83, 27, 14]
+        }
+df = pd.DataFrame(data)
+df
+   moons   planet  radius_km # output
+0      0  Mercury       2440
+1      0    Venus       6052
+2      1    Earth       6371
+3      2     Mars       3390
+4     80  Jupiter      69911
+5     83   Saturn      58232
+6     27   Uranus      25362
+7     14  Neptune      24622
+
+print(df['moons'] < 20) # creating the boolean mask by writing a logical statement; makes a masked series consisting of Trues (where 'moons' is less than 20) and Falses 
+0     True # output
+1     True
+2     True
+3     True
+4    False
+5    False
+6    False
+7     True
+Name: moons, dtype: bool
+
+print(df[df['moons'] < 20]) # applies the mask to the df
+# or can do it this way, by assigning the mask to a variable
+mask = df['moons'] < 20
+df[mask]
+   moons   planet  radius_km # output
+0      0  Mercury       2440
+1      0    Venus       6052
+2      1    Earth       6371
+3      2     Mars       3390
+7     14  Neptune      24622
+
+df # not that the masking doesn't permanently modify the df, it only gives a filtered view of it
+   moons   planet  radius_km # output
+0      0  Mercury       2440
+1      0    Venus       6052
+2      1    Earth       6371
+3      2     Mars       3390
+4     80  Jupiter      69911
+5     83   Saturn      58232
+6     27   Uranus      25362
+7     14  Neptune      24622
+
+mask = df['moons'] < 20 # here's how to assign the result of the mask to a variable
+df2 = df[mask]
+df2
+   moons   planet  radius_km # output
+0      0  Mercury       2440
+1      0    Venus       6052
+2      1    Earth       6371
+3      2     Mars       3390
+7     14  Neptune      24622
+
+mask = df['moons'] < 20 # selecting only the 'planet' column as a series (after applying the mask to the df)
+df.loc[mask, 'planet']
+0    Mercury # output
+1      Venus
+2      Earth
+3       Mars
+7    Neptune
+Name: planet, dtype: object
+
