@@ -1279,3 +1279,12 @@ right
 5   Neptune    24622.0   14.0     ice giant   yes      -200.0            yes    0   
 6   Janssen        NaN    NaN   super earth    no         NaN           None    1   
 7    Tadmor        NaN    NaN     gas giant  None         NaN           None    1
+
+
+
+### Importing datasets; modes: 'r' (read), 'w' (write), 'a' (append), '+' (create new file) ###
+
+with open('example_filepath/file', mode='r') as file: # [Python way] reads a file and assigns the result to a variable 'data'
+	data = file.read()
+
+df = pd.read_csv('example_filepath/file') # [Pandas way] eads a file and loads the data into a DataFrame
