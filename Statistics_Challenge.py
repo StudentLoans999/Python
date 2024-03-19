@@ -1,4 +1,7 @@
-## Task: Group the means of each species (encoded as bytes) from data provided through a link
+## Task: Given a data file containing data about irises, find the grouped mean of a numeric column, sepal width, grouped by a categorical column, species, using NumPy
+## The data will look like the following, where the first column is the sepal width and the fourth column is the species:
+## 5.1,3.5,1.4,0.2,Iris-setosa ; 4.9,3.0,1.4,0.2,Iris-setosa ... 7.0,3.2,4.7,1.4,Iris-versicolor ; 6.4,3.2,4.5,1.5,Iris-versicolor ... 6.0,2.2,5.0,1.5,Iris-virginica ; 6.9,3.2,5.7,2.3,Iris-virginica
+## The expected output should be in the following format: [b'Iris-setosa', 1.1111] ; [b'Iris-versicolor', 2.22222] ; [b'Iris-virginica', 3.3333]
 
 import numpy as np
 import pandas as pd
