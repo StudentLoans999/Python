@@ -1288,3 +1288,38 @@ with open('example_filepath/file', mode='r') as file: # [Python way] reads a fil
 	data = file.read()
 
 df = pd.read_csv('example_filepath/file') # [Pandas way] eads a file and loads the data into a DataFrame
+
+
+
+### .to_datetime - converts strings/series to datetime64 ###
+
+data = ['2023-01-20', '2023-04-27', '2023-06-15'] # series to be used for examples below
+my_series = pd.Series(data)
+my_series
+0    2023-01-20 # output
+1    2023-04-27
+2    2023-06-15
+
+my_series = pd.to_datetime(my_series) # converts 'my_series' to datetime format
+my_series
+0   2023-01-20 # output
+1   2023-04-27
+2   2023-06-15
+dtype: datetime64[ns]
+
+print(my_series.dt.year) # uses 'dt' to access various properties of the data, like year, month, and day
+print()
+print(my_series.dt.month)
+print()
+print(my_series.dt.day)
+0    2023 # output
+1    2023
+2    2023
+
+0    1
+1    4
+2    6
+
+0    20
+1    27
+2    15
