@@ -56,7 +56,7 @@ df.tail()
 98 2024-09-25                178  25   39    09      3  2024
 99 2021-05-09                938  09   18    05      2  2021
 
-# Add text label to a bar plot at specified positions (x, y) 
+# Function: Add text label to a bar plot at specified positions (x, y) 
 def add_labels(x, y, labels):
     for i in range(len(x)): #  iterates over the number of bars in the plot
         plt.text(i, y[i], labels[i], ha = 'center', va = 'bottom') # 'i' is index of the data point (horizontal position); 'y[i]' is value of the data point at the current index (vertical position)
@@ -78,7 +78,7 @@ df_by_week_2020
 11   49                905
 12   50                898
 
-# Plot a bar chart of weekly strike totals in 2020
+# Plot a bar chart of weekly strike totals in 2020 #
 plt.figure(figsize = (20, 5)) # increase output size
 plt.bar(x=df_by_week_2020['week'], height=df_by_week_2020['lightning_strikes']) # create a bar chart showing lightning strikes by weeks
 plt.xlabel("Week number") # x-axis title
@@ -88,6 +88,7 @@ plt.title("Number of lightning strikes per week (2020)") # title
 plt.xticks(rotation = 45, fontsize = 10) # rotate x-axis labels and decrease font size
 plt.plot() # create a plot
 plt.show() # shows the created bar chart
+
 
 df_by_quarter_2021_2022 = df[(df['year'].isin(['2021', '2022']))].groupby(['year', 'quarter'])['lightning_strikes'].sum().reset_index() # create new df view of just 2021 and 2022 lightning_strikes data (have to reset index for bar chart to work), summed by quarter
 df_by_quarter_2021_2022
@@ -102,6 +103,7 @@ year  quarter # output if .reset_index() is removed
       4          1312
 Name: lightning_strikes, dtype: int32
 
+# Plot a bar chart of quarterly strike totals in 2021-2022 #
 quarters = 'Q' +  df_by_quarter_2021_2022['quarter'] + ' ' + df_by_quarter_2021_2022['year']  # concatenate 'quarter' and 'year' columns
 
 plt.figure(figsize = (15, 5)) # increase output size
@@ -113,6 +115,7 @@ plt.title("Number of lightning strikes per quarter (2021-2022)") # title
 plt.plot() # create a plot
 plt.show() # shows the created bar chart
 
+
 # Create a new df
 df_by_quarter_2020_2021_2022_2023_2024 = df[df['year'].isin(['2020', '2021', '2022', '2023', '2024'])].groupby(['year', 'quarter'])['lightning_strikes'].sum().reset_index() # create new df view of all the years of lightning_strikes data summed by quarter
 
@@ -121,26 +124,29 @@ df_by_quarter_2020_2021_2022_2023_2024['quarter_number'] = df_by_quarter_2020_20
 df_by_quarter_2020_2021_2022_2023_2024['year'] = df_by_quarter_2020_2021_2022_2023_2024['year'].astype(int)
 df_by_quarter_2020_2021_2022_2023_2024
 
-plt.figure(figsize = (15, 5))
+# Plot a bar chart of yearly strike totals per quarter in 2020-2024 #
+plt.figure(figsize = (15, 5)) # increase output size
+
+# Creates a bar plot of lightning strikes per quarter, grouped by year
 p = sns.barplot(
     data = df_by_quarter_2020_2021_2022_2023_2024,
     x = 'quarter_number',
     y = 'lightning_strikes',
-    hue = 'year'
+    hue = 'year',
+    color = "purple"
 )
-for b in p.patches:
-    p.annotate(str(round(b.get_height()/1000000, 1)) + 'M',
-               (b.get_x() + b.get_width() / 2., b.get_height() + 1.2e6),
-               ha = 'center', va = 'bottom',
-               xytext = (0, -12),
-               textcoords = 'offset points'
+
+# Iterate over each bar in the plot and annotate: height is above the top of the bar; width is centered
+for b in p.patches: # iterates over each bar in the bar plot (each bar is represented as a patch object)
+    p.annotate(str(round(b.get_height(), 1)), # adds text annotations to each bar. Rounds the height of the bar to one decimal place and then converts it to a string 
+               (b.get_x() + b.get_width() / 2., b.get_height() + 1.2e6), # places the annotation at the center of the bar horizontally and slightly above the top of the bar
+               ha = 'center', va = 'bottom', # sets horizontal alignment to center and vertical alignment to the bottom
+               xytext = (0, -12), # offsets the current position zero units horizontally and twelve units down
+               textcoords = 'offset points' # indicates that the xytext coordinates are interpreted as offset points from the xy coordinates
     )
-plt.xlabel("Quarter") # x-axis title
-plt.ylabel("Number of lightning strikes") # y-axis title
 
 # Annotate each bar with its value
-
-for index, row in df_by_quarter_2020_2021_2022_2023_2024.iterrows():
+for index, row in df_by_quarter_2020_2021_2022_2023_2024.iterrows(): # iterates over each row in the df
     if row['year'] == 2020:
         x_pos = row['quarter_number'] + (int(row['year']) - 2024) * 0.33
     elif row['year'] == 2021:
@@ -150,11 +156,13 @@ for index, row in df_by_quarter_2020_2021_2022_2023_2024.iterrows():
     elif row['year'] == 2023:
         x_pos = row['quarter_number'] + (int(row['year']) - 2024) * 0.84
     elif row['year'] == 2024:
-        x_pos = row['quarter_number'] + (int(row['year']) - 2025) * 0.68
+        x_pos = row['quarter_number'] + (int(row['year']) - 2025) * 0.68 # calculates the x-coordinate position of the annotation, based on the year
 
-    y_pos = row['lightning_strikes']  # Use the lightning strike value as y-coordinate
-    p.text(x_pos, y_pos, str(row['lightning_strikes']), 
-           color='blue', ha='center', va='bottom')
+    y_pos = row['lightning_strikes']  # uses the lightning strike value as y-coordinate
+    p.text(x_pos, y_pos, str(row['lightning_strikes']), # adds a text annotation to the plot. 'lightning_strikes' value is converted to a string and is displayed as the annotation
+           color='blue', ha='center', va='bottom') # color and positioning of the text
 
+plt.xlabel("Quarter") # x-axis title
+plt.ylabel("Number of lightning strikes") # y-axis title
 plt.title("Number of lightning strikes per quarter (2020-2024)") # title
 plt.show() # shows the created bar chart
