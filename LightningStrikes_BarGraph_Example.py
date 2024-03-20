@@ -145,7 +145,7 @@ p = sns.barplot(
 # Iterate over each bar in the plot and annotate: height is above the top of the bar; width is centered
 for b in p.patches: # iterates over each bar in the bar plot (each bar is represented as a patch object)
     p.annotate(str(round(b.get_height(), 1)), # adds text annotations to each bar. Rounds the height of the bar to one decimal place and then converts it to a string 
-               (b.get_x() + b.get_width() / 2., b.get_height() + 1.2e6), # places the annotation at the center of the bar horizontally and slightly above the top of the bar
+               (b.get_x() + b.get_width() / 2, b.get_height() + 1.2e6), # places the annotation at the center of the bar horizontally and slightly above the top of the bar
                ha = 'center', va = 'bottom', # sets horizontal alignment to center and vertical alignment to the bottom
                xytext = (0, -12), # offsets the current position zero units horizontally and twelve units down
                textcoords = 'offset points' # indicates that the xytext coordinates are interpreted as offset points from the xy coordinates
