@@ -1205,6 +1205,9 @@ df3
 6   Uranus      25362     27
 7  Neptune      24622     14
 
+# Random example
+df3 = pd.concat([df1.drop(['column_1','column_2'], axis=1), df2]) # creates 'df3' which is 'df1' with 'column_1' and 'column_2' removed (from the column axis), followed by the rows of 'df2'
+
 
 
 ### .merge - joins two DataFrames together by using keys (shared points of reference - what to match on); it only combines data by extending along axis 1 horizontally ###
@@ -1279,6 +1282,15 @@ right
 5   Neptune    24622.0   14.0     ice giant   yes      -200.0            yes    0   
 6   Janssen        NaN    NaN   super earth    no         NaN           None    1   
 7    Tadmor        NaN    NaN     gas giant  None         NaN           None    1
+
+# Random example
+df1.merge(df2, how=‘inner’, on=[‘month’,’year’]) # merges 'df1' to 'df2'
+
+
+
+### .join() - combines columns with another DataFrame either on an index or on a key column ###
+
+df1.set_index('room').join(df2.set_index('room')) # joins 'df1' and 'df2' on their 'room' columns; results in a new df containing the columns from both df1 and df2, aligned based on their 'room' values
 
 
 
