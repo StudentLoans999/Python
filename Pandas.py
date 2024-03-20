@@ -990,6 +990,9 @@ John    2
 Anne    1
 Beth    1
 
+# Random example: Gets top 20 results 
+df.center_point_geom.value_counts()[:20].reanme_axis('unique_values').reset_index(name='counts').style.background_gradient() # renames the axis to 'unique_values' and the index to 'counts', and adds a gradient background
+
 
 
 ### .mask - replaces values where the condition is True ###
