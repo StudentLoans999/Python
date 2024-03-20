@@ -1,3 +1,9 @@
+# TASK: 1. Create a df filled with daily dates ranging from years 2020-2024 and assign random values for each date to represent lightning strikes occurring
+# 2. Make the df have columns for the different time increments (day, week, month, quarter, year)
+# 3. Create a function to efficiently add a text label to a bar plot at specified positions (x, y), which will be implemented in bar charts later
+# 4. Create and plot a bar chart of: weekly strike totals in 2020
+# 5. Create and plot a bar chart of: quarterly strike totals in 2021-2022
+# 6. Create and plot a bar chart (use sns and annotate each bar in the plot) of: yearly strike totals per quarter in 2020-2024
 
 #pip install matplotlib
 #pip install pandas
@@ -32,7 +38,7 @@ df
   
 df['date'] = pd.to_datetime(df['date']) # converts 'date' column to datetime format (so df['date'] will be dtype: datetime64[ns])
 
-# Create 4 new columns
+# Create 5 new columns
 df['day'] = df['date'].dt.strftime('%d') # yyyy-mm-D##
 df['week'] = df['date'].dt.strftime('%V') # yyyy-W##
 df['month'] = df['date'].dt.strftime('%m') # yyyy-M##
