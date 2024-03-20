@@ -138,8 +138,7 @@ for b in p.patches:
 plt.xlabel("Quarter") # x-axis title
 plt.ylabel("Number of lightning strikes") # y-axis title
 
-
-#Annotate each bar with its value
+# Annotate each bar with its value
 
 for index, row in df_by_quarter_2020_2021_2022_2023_2024.iterrows():
     if row['year'] == 2020:
@@ -147,15 +146,15 @@ for index, row in df_by_quarter_2020_2021_2022_2023_2024.iterrows():
     elif row['year'] == 2021:
         x_pos = row['quarter_number'] + (int(row['year']) - 2023) * 0.58
     elif row['year'] == 2022:
-        x_pos = row['quarter_number'] + (int(row['year']) - 2022) * 0.33
+        x_pos = row['quarter_number'] + (int(row['year']) - 2024) * 0.5 
     elif row['year'] == 2023:
-        x_pos = row['quarter_number'] + (int(row['year']) - 2021) * 0.33
+        x_pos = row['quarter_number'] + (int(row['year']) - 2024) * 0.84
     elif row['year'] == 2024:
-        x_pos = row['quarter_number'] + (int(row['year']) - 2020) * 0.33
+        x_pos = row['quarter_number'] + (int(row['year']) - 2025) * 0.68
 
     y_pos = row['lightning_strikes']  # Use the lightning strike value as y-coordinate
     p.text(x_pos, y_pos, str(row['lightning_strikes']), 
-           color='black', ha='center', va='bottom')
+           color='blue', ha='center', va='bottom')
 
 plt.title("Number of lightning strikes per quarter (2020-2024)") # title
 plt.show() # shows the created bar chart
