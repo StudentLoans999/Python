@@ -2,6 +2,9 @@
 # 2. Make the df have columns for the week number in the year and the day of the week
 # 3. Filter the df to only have year 2020 data in it 
 # 4. Create and plot a box plot (use sns) of: strike totals per day of the week for the year 2020
+# 5. Combine the filtered year 2020 data with year 2024 data, but remove the week number and day of the week columns first
+# 6. Output the two years' total lightning strikes, with the year of least lightning strikes first
+# 7. Output (in bold) which year of those two had the least lightning strikes and the number of strikes
 
 #pip install matplotlib
 #pip install pandas
@@ -68,8 +71,63 @@ g = sns.boxplot (data = df_2020,
                  y = 'lightning_strikes',
                  order = day_of_the_week_order,
                  showfliers = True, # does include outliers
-                )
+)
+
+# Iterate over each box in the plot and annotate: height is above the top of the box; width is centered
+for b in g.artists: # iterates over each box in the box plot (each box is represented as a patch object)
+  bbox = b.get_bbox()  # get the bounding box of the box
+  y_pos_upper = bbox.y1 + 0.2e6  # add a little offset above the top of the box
+  y_pos_lower = bbox.y0 - 0.2e6  # subtract a slightly offset below the bottom of the box
+  
+  # Annotate upper bound each box
+  g.annotate(str(round(bbox.y1, 1)), # adds text annotations to the upper bound of each box. Rounds the upper bound of the box to one decimal place and then converts it to a string 
+              (bbox.x0 + bbox.width / 2, y_pos_upper), # places the annotation at the center of the box horizontally and slightly above the top of the box
+              ha = 'center', va = 'bottom', # sets horizontal alignment to center and vertical alignment to the bottom
+              xytext = (0, 6), # offsets the current position zero units horizontally and twelve units down
+              textcoords = 'offset points' # indicates that the xytext coordinates are interpreted as offset points from the xy coordinates
+  )
+
+# Annotate each box with its value
+for index, row in df_2020.iterrows(): # iterates over each row in the df
+  x_pos = row['day_of_the_week']
+  y_pos = row['lightning_strikes']  # uses the lightning strike value as y-coordinate
+  g.text(x_pos, y_pos, str(row['lightning_strikes']), # adds a text annotation to the plot. 'lightning_strikes' value is converted to a string and is displayed as the annotation
+           color = 'red', ha = 'center', va = 'bottom') # color and positioning of the text
+  
 g.set_title('Lightning distribution per day of the week (2020)')
 plt.xlabel('Day of the week', labelpad = 20) # specifies the distance between the label and the corresponding axis
 plt.ylabel('Number of lightning strikes', labelpad = 20)
 plt.show()
+
+# Combine the filtered year 2020 data with year 2024 data, after removing the 'week' and 'day_of_the_week' columns
+df_2024 = df[df['date'].dt.year == 2024] # create a new df with only year 2024 data
+df_2020 = df_2020.drop(['week', 'day_of_the_week'], axis = 1) # drop 'week' and 'day_of_the_week' columns from year 2020 data
+df_2024 = df_2024.drop(['week', 'day_of_the_week'], axis = 1)  # drop 'week' and 'day_of_the_week' columns from year 2024 data
+df_2020_2024 = pd.concat([df_2020, df_2024], ignore_index = True) # join year 2020 data to year 2024 data without 'week' and 'day_of_the_week'
+df_2020_2024.head()
+print()
+df_2020_2024.tail()
+        date  lightning_strikes # output
+0 2020-06-26                450
+1 2020-01-07                629
+2 2020-01-15                512
+3 2020-08-14                960
+4 2020-06-13                643
+
+         date  lightning_strikes
+29 2024-10-07                587
+30 2024-03-06                841
+31 2024-07-14                423
+32 2024-07-26                408
+33 2024-10-16                443
+
+# Lists first which year (2020 or 2024) had the least lightning strikes
+df_2020_2024['year'] = df_2020_2024['date'].dt.strftime('%Y') # makes a 'year' column in this format: yyyy
+total_lightning_strikes_by_year = df_2020_2024[['year', 'lightning_strikes']].groupby(['year']).sum() # groups the total lightning strikes by year
+total_lightning_strikes_by_year_sorted = total_lightning_strikes_by_year.sort_values(by = 'lightning_strikes', ascending = True)
+total_lightning_strikes_by_year_sorted
+
+# Output the year with the least lightning strikes and the number of strikes
+year_least_strikes = total_lightning_strikes_by_year_sorted.index[0] # get the first row's column (the year with the least strikes)
+lightning_strikes_least = total_lightning_strikes_by_year_sorted.loc[year_least_strikes, 'lightning_strikes'] # get the value in the row with the least strikes and in the 'lightning_strikes' column
+print(f"The year with the least lightning strikes is \033[1m{year_least_strikes}\033[0m with \033[1m{lightning_strikes_least}\033[0m strikes")
