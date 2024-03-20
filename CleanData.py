@@ -3,7 +3,7 @@
 pip install pandas # install the 'pandas' library
 import pandas as pd # import the necessary library
 
-# Create a sample DataFrame ('df' with columns 'A', 'B', and 'C', containg some missing values)
+# Create a sample DataFrame ('df' with columns 'A', 'B', and 'C' with some containing some missing values)
 
 data = {
     'A': [1, 2, 3, 4, None, 6, 7, 8, 9],
