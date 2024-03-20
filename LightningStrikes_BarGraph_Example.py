@@ -112,3 +112,50 @@ add_labels(df_by_quarter_2021_2022['quarter'], df_by_quarter_2021_2022['lightnin
 plt.title("Number of lightning strikes per quarter (2021-2022)") # title
 plt.plot() # create a plot
 plt.show() # shows the created bar chart
+
+# Create a new df
+df_by_quarter_2020_2021_2022_2023_2024 = df[df['year'].isin(['2020', '2021', '2022', '2023', '2024'])].groupby(['year', 'quarter'])['lightning_strikes'].sum().reset_index() # create new df view of all the years of lightning_strikes data summed by quarter
+
+# Create 2 new columns from the newly created df
+df_by_quarter_2020_2021_2022_2023_2024['quarter_number'] = df_by_quarter_2020_2021_2022_2023_2024['quarter'].astype(int)
+df_by_quarter_2020_2021_2022_2023_2024['year'] = df_by_quarter_2020_2021_2022_2023_2024['year'].astype(int)
+df_by_quarter_2020_2021_2022_2023_2024
+
+plt.figure(figsize = (15, 5))
+p = sns.barplot(
+    data = df_by_quarter_2020_2021_2022_2023_2024,
+    x = 'quarter_number',
+    y = 'lightning_strikes',
+    hue = 'year'
+)
+for b in p.patches:
+    p.annotate(str(round(b.get_height()/1000000, 1)) + 'M',
+               (b.get_x() + b.get_width() / 2., b.get_height() + 1.2e6),
+               ha = 'center', va = 'bottom',
+               xytext = (0, -12),
+               textcoords = 'offset points'
+    )
+plt.xlabel("Quarter") # x-axis title
+plt.ylabel("Number of lightning strikes") # y-axis title
+
+
+#Annotate each bar with its value
+
+for index, row in df_by_quarter_2020_2021_2022_2023_2024.iterrows():
+    if row['year'] == 2020:
+        x_pos = row['quarter_number'] + (int(row['year']) - 2024) * 0.33
+    elif row['year'] == 2021:
+        x_pos = row['quarter_number'] + (int(row['year']) - 2023) * 0.58
+    elif row['year'] == 2022:
+        x_pos = row['quarter_number'] + (int(row['year']) - 2022) * 0.33
+    elif row['year'] == 2023:
+        x_pos = row['quarter_number'] + (int(row['year']) - 2021) * 0.33
+    elif row['year'] == 2024:
+        x_pos = row['quarter_number'] + (int(row['year']) - 2020) * 0.33
+
+    y_pos = row['lightning_strikes']  # Use the lightning strike value as y-coordinate
+    p.text(x_pos, y_pos, str(row['lightning_strikes']), 
+           color='black', ha='center', va='bottom')
+
+plt.title("Number of lightning strikes per quarter (2020-2024)") # title
+plt.show() # shows the created bar chart
