@@ -56,6 +56,11 @@ df.tail()
 98 2024-09-25                178  25   39    09      3  2024
 99 2021-05-09                938  09   18    05      2  2021
 
+# Add text label to a bar plot at specified positions (x, y) 
+def add_labels(x, y, labels):
+    for i in range(len(x)): #  iterates over the number of bars in the plot
+        plt.text(i, y[i], labels[i], ha = 'center', va = 'bottom') # 'i' is index of the data point (horizontal position); 'y[i]' is value of the data point at the current index (vertical position)
+
 df_by_week_2020 = df[df['year'] == '2020'].groupby('week')['lightning_strikes'].sum().reset_index() # create new df view of just 2020 lightning_strikes data, summed by week
 df_by_week_2020
    week  lightning_strikes # output
@@ -74,18 +79,19 @@ df_by_week_2020
 12   50                898
 
 # Plot a bar chart of weekly strike totals in 2020
-plt.figure(figsize = (20, 5)) # increase output size (width, height)
-plt.bar(x=df_by_week_2020['week'], height=df_by_week_2020['lightning_strikes']) # create a bar chart
+plt.figure(figsize = (20, 5)) # increase output size
+plt.bar(x=df_by_week_2020['week'], height=df_by_week_2020['lightning_strikes']) # create a bar chart showing lightning strikes by weeks
 plt.xlabel("Week number") # x-axis title
 plt.ylabel("Number of lightning strikes") # y-axis title
+add_labels(df_by_week_2020['week'], df_by_week_2020['lightning_strikes'], df_by_week_2020['lightning_strikes'])  # labels the number of lightning strikes on top of the bar
 plt.title("Number of lightning strikes per week (2020)") # title
 plt.xticks(rotation = 45, fontsize = 10) # rotate x-axis labels and decrease font size
 plt.plot() # create a plot
 plt.show() # shows the created bar chart
 
-df_by_quarter_2021_2022 = df[(df['year'] == '2021') | (df['year'] == '2022')].groupby(['year', 'quarter'])['lightning_strikes'].sum() # create new df view of just 2021 and 2022 lightning_strikes data (separate indices), summed by quarter
+df_by_quarter_2021_2022 = df[(df['year'].isin(['2021', '2022']))].groupby(['year', 'quarter'])['lightning_strikes'].sum().reset_index() # create new df view of just 2021 and 2022 lightning_strikes data (have to reset index for bar chart to work), summed by quarter
 df_by_quarter_2021_2022
-year  quarter # output
+year  quarter # output if .reset_index() is removed
 2021  1          3104
       2          3150
       3          1077
@@ -96,3 +102,13 @@ year  quarter # output
       4          1312
 Name: lightning_strikes, dtype: int32
 
+quarters = 'Q' +  df_by_quarter_2021_2022['quarter'] + ' ' + df_by_quarter_2021_2022['year']  # concatenate 'quarter' and 'year' columns
+
+plt.figure(figsize = (15, 5)) # increase output size
+plt.bar(x = quarters, height = df_by_quarter_2021_2022['lightning_strikes']) # create a bar chart showing lightning strikes by quarters
+plt.xlabel("Quarter") # x-axis title
+plt.ylabel("Number of lightning strikes") # y-axis title
+add_labels(df_by_quarter_2021_2022['quarter'], df_by_quarter_2021_2022['lightning_strikes'], df_by_quarter_2021_2022['lightning_strikes']) # labels the number of lightning strikes on top of the bar
+plt.title("Number of lightning strikes per quarter (2021-2022)") # title
+plt.plot() # create a plot
+plt.show() # shows the created bar chart
