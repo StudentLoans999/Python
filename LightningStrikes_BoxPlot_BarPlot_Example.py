@@ -5,6 +5,9 @@
 # 5. Combine the filtered year 2020 data with year 2024 data, but remove the week number and day of the week columns first
 # 6. Output the two years' total lightning strikes, with the year of least lightning strikes first
 # 7. Output (in bold) which year of those two had the least lightning strikes and the number of strikes
+# 8. Calculate total lightning strikes for each month of each year (2020-2024)
+# 9. Calculate total lightning strikes for each year (2020-2024)
+# 10. Create and plot a bar chart (use sns) of: the percentage of lightning strikes each month for each year (2020-2024)
 
 #pip install matplotlib
 #pip install pandas
@@ -104,6 +107,7 @@ df_2024 = df[df['date'].dt.year == 2024] # create a new df with only year 2024 d
 df_2020 = df_2020.drop(['week', 'day_of_the_week'], axis = 1) # drop 'week' and 'day_of_the_week' columns from year 2020 data
 df_2024 = df_2024.drop(['week', 'day_of_the_week'], axis = 1)  # drop 'week' and 'day_of_the_week' columns from year 2024 data
 df_2020_2024 = pd.concat([df_2020, df_2024], ignore_index = True) # join year 2020 data to year 2024 data without 'week' and 'day_of_the_week'
+
 df_2020_2024.head()
 print()
 df_2020_2024.tail()
@@ -125,9 +129,107 @@ df_2020_2024.tail()
 df_2020_2024['year'] = df_2020_2024['date'].dt.strftime('%Y') # makes a 'year' column in this format: yyyy
 total_lightning_strikes_by_year = df_2020_2024[['year', 'lightning_strikes']].groupby(['year']).sum() # groups the total lightning strikes by year
 total_lightning_strikes_by_year_sorted = total_lightning_strikes_by_year.sort_values(by = 'lightning_strikes', ascending = True)
+
 total_lightning_strikes_by_year_sorted
+      lightning_strikes # output
+year
+2024               7909
+2020               9293
+
 
 # Output the year with the least lightning strikes and the number of strikes
 year_least_strikes = total_lightning_strikes_by_year_sorted.index[0] # get the first row's column (the year with the least strikes)
 lightning_strikes_least = total_lightning_strikes_by_year_sorted.loc[year_least_strikes, 'lightning_strikes'] # get the value in the row with the least strikes and in the 'lightning_strikes' column
 print(f"The year with the least lightning strikes is \033[1m{year_least_strikes}\033[0m with \033[1m{lightning_strikes_least}\033[0m strikes")
+
+# Calculate total lightning strikes for each month of each year (2020-2024)
+df['month'] = df['date'].dt.strftime('%m') # makes a 'month' column in this format: yyyy-MM
+df['year'] = df['date'].dt.strftime('%Y') # makes a 'year' column in this format: yyyy
+
+lightning_by_month = df.groupby(['month', 'year']).agg( # group df by 'month' and 'year' and aggregate the sums of 'lightning_strikes' into a new column called 'number_of_strikes'
+  number_of_strikes = ('lightning_strikes', 'sum')
+  ).reset_index()
+
+lightning_by_month.head()
+print()
+lightning_by_month.tail()
+  month  year  number_of_strikes # output
+0    01  2020               1915
+1    01  2021               2024
+2    01  2022                116
+3    01  2023               1953
+4    01  2024               1300
+
+   month  year  number_of_strikes
+45    11  2024                697
+46    12  2021               2973
+47    12  2022                175
+48    12  2023                564
+49    12  2024                344
+
+# Calculate total lightning strikes for each month of each year (2020-2024)
+df['month'] = df['date'].dt.strftime('%m') # makes a 'month' column in this format: yyyy-MM
+df['year'] = df['date'].dt.strftime('%Y') # makes a 'year' column in this format: yyyy
+
+lightning_by_month = df.groupby(['month', 'year']).agg( # group df by 'month' and 'year' and aggregate the sums of 'lightning_strikes' into a new column called 'number_of_strikes'
+  number_of_strikes = ('lightning_strikes', 'sum')
+  ).reset_index()
+
+lightning_by_month.head()
+print()
+lightning_by_month.tail()
+  month  year  monthly_strikes # output
+0    01  2020               1915
+1    01  2021               2024
+2    01  2022                116
+3    01  2023               1953
+4    01  2024               1300
+
+   month  year  monthly_strikes
+45    11  2024                697
+46    12  2021               2973
+47    12  2022                175
+48    12  2023                564
+49    12  2024                344
+
+# Calculate total lightning strikes for each year (2020-2024)
+lightning_by_year = df.groupby(['year']).agg( # group df by 'year' and aggregate the sums of 'lightning_strikes' into a new column called 'yearly_strikes'
+  yearly_strikes = ('lightning_strikes', 'sum')
+  ).reset_index()
+
+lightning_by_year.head()
+   year  yearly_strikes # output
+0  2020            8694
+1  2021           10152
+2  2022           10241
+3  2023            8860
+4  2024           15741
+
+# Create a bar chart of the percentage of lightning strikes each month for each year (2020-2024)
+percentage_lightning = lightning_by_month.merge(lightning_by_year, on = 'year') # merge the 'lightning_by_month' df with the 'lightning_by_year' df on the shared key 'year'
+percentage_lightning.head()
+  month  year  monthly_strikes  yearly_strikes # output
+0    01  2020              919            9935
+1    01  2021             2410           13284
+2    01  2022              415            9406
+3    01  2024             1062           10734
+4    02  2020              977            9935
+
+percentage_lightning['percentage_lightning_per_month'] = round((percentage_lightning.monthly_strikes / percentage_lightning.yearly_strikes * 100), 1) # makes a new column called 'percentage_lightning_per_month' that is 'monthly_strikes' / 'yearly_strikes' * 100 and rounded to one decimal place
+percentage_lightning.head()
+print()
+percentage_lightning.tail()
+  month  year  monthly_strikes  yearly_strikes  percentage_lightning_per_month # output
+0    01  2020              919            9935                             9.3
+1    01  2021             2410           13284                            18.1
+2    01  2022              415            9406                             4.4
+3    01  2024             1062           10734                             9.9
+4    02  2020              977            9935                             9.8
+
+   month  year  monthly_strikes  yearly_strikes  percentage_lightning_per_month
+45    11  2022              879            9406                             9.3
+46    11  2023              805           12532                             6.4
+47    11  2024              831           10734                             7.7
+48    12  2022             1040            9406                            11.1
+49    12  2024             1405           10734                            13.1
+
