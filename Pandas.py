@@ -1338,3 +1338,90 @@ print(my_series.dt.day)
 0    20
 1    27
 2    15
+
+
+
+### .duplicated - Returns a Series of True/Fase outputs with True indicating the data value is a duplicate ###
+
+df # imagine this df was imported; used for example below
+     brand    style  rating # output
+0   Wowyow  cistern     4.0
+1   Wowyow  cistern     4.0
+2  Splaysh      jug     5.5
+3  Splaysh    stock     3.3
+4  Pipplee    stock     3.0
+
+df.dplicated() # when a duplicate value is found, it outputs 'True' there for entire df
+0    False # output
+1     True
+2    False
+3    False
+4    False
+dtype: bool
+
+df # imagine this df was imported; used for example below
+    color  rating     type # output
+0   olive     9.0    rinds
+1   olive     9.0    rinds
+2    gray     4.5  pellets
+3  salmon    11.0  pellets
+4  salmon     7.0  pellets
+
+df.duplicated(subset=['type'], keep='last') # looks for duplicates in the column 'type' only and labels the last duplicates as False so that they are "kept"
+0     True # output
+1    False
+2     True
+3     True
+4    False
+
+
+
+### .drop_duplicates - Creates a new DataFrame with all of the duplicate rows removed ###
+
+df # imagine this df was imported; used for example below
+     brand    style  rating # output
+0   Wowyow  cistern     4.0
+1   Wowyow  cistern     4.0
+2  Splaysh      jug     5.5
+3  Splaysh    stock     3.3
+4  Pipplee    stock     3.0
+
+df.drop_duplicates() # the duplicate row of Wowyow cistern 4.0 will be removed
+     brand    style  rating # output
+0   Wowyow  cistern     4.0
+2  Splaysh      jug     5.5
+3  Splaysh    stock     3.3
+4  Pipplee    stock     3.0
+
+df
+df = df.drop_duplicates(subset='style') # drops all rows that have duplicate values in the 'style' column (except for the first occurrence)
+print()
+df
+     brand    style  rating # output
+0   Wowyow  cistern     4.0
+1   Wowyow  cistern     4.0
+2  Splaysh      jug     5.5
+3  Splaysh    stock     3.3
+4  Pipplee    stock     3.0
+
+     brand    style  rating
+0   Wowyow  cistern     4.0
+2  Splaysh      jug     5.5
+3  Splaysh    stock     3.3
+
+df
+df = df.drop_duplicates(subset=['style', 'rating']) # drops all rows (except the first occurrence) that have duplicate values in both the 'style' and 'rating' columns 
+print()
+df
+     brand    style  rating # output
+0   Wowyow  cistern     4.0
+1   Wowyow  cistern     4.0
+2  Splaysh      jug     5.5
+3  Splaysh    stock     3.3
+4  Pipplee    stock     3.0
+
+     brand    style  rating
+0   Wowyow  cistern     4.0
+2  Splaysh      jug     5.5
+3  Splaysh    stock     3.3
+4  Pipplee    stock     3.0
