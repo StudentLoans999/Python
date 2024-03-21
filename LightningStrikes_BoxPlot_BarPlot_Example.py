@@ -7,7 +7,7 @@
 # 7. Output (in bold) which year of those two had the least lightning strikes and the number of strikes
 # 8. Calculate total lightning strikes for each month of each year (2020-2024)
 # 9. Calculate total lightning strikes for each year (2020-2024)
-# 10. Create and plot a bar chart (use sns) of: the percentage of lightning strikes each month for each year (2020-2024). (Add the minimum and maximum value to the title)
+# 10. Create and plot a bar chart (use sns) of: the percentage of lightning strikes each month for each year (2020-2024). (Add the minimum and maximum values to the title)
 
 #pip install matplotlib
 #pip install pandas
