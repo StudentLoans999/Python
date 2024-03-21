@@ -174,10 +174,31 @@ print()
 df_joined.shape
 (100, 9) # output
 
-# Set some random entries (at random locations) to NaN in 'df_joined' (creating Null values)
-num_null_values = 10  # number of null values to introduce
-rows_to_nullify = np.random.choice(df_joined.index, num_null_values, replace=False) # random indices of rows
-cols_to_nullify = np.random.choice(df_joined.columns, num_null_values, replace=False) # random column names
-df_joined.loc[rows_to_nullify, cols_to_nullify] = np.nan # set the selected entries to NaN
+# Set some random entries in random rows to NaN in 'df_joined' (to create Null values)
+num_null_rows = np.random.randint(1, min(len(df_joined.index) + 1, len(df_joined.columns) + 1)) # number of null values to introduce ; ensures num_null_rows is not greater than the number of rows nor columns, but is affecting at least 1 row
+
+# Randomly choose between 'longitude' and 'latitude' columns for each null value, but only chooses either or per entry
+for _ in range(num_null_rows): # iterates 'num_null_rows' times
+    row_idx = np.random.choice(df_joined.index) # choose a random row index
+    col_to_nullify = np.random.choice(['longitude', 'latitude']) # randomly choose between these two columns to set to NaN (but not both at the same time)
+    df_joined.loc[row_idx, col_to_nullify] = np.nan # set the selected entry (location) to NaN
+
+df_joined
+date    center_point_geom  longitude  latitude  lightning_strikes zip_code          city         state state_code # output
+0  2020-01-04  POINT(-142.6 -11.0)     -142.6     -11.0                179    00892      Columbus          Ohio         OH
+1  2020-11-13    POINT(-9.9 -75.5)       -9.9     -75.5                330    13560    Louisville      Kentucky         KY
+2  2023-12-20   POINT(150.7 -46.9)      150.7     -46.9                649    05448      Columbus          Ohio         OH
+3  2023-06-29    POINT(64.2 -88.6)       64.2     -88.6                408    37871  Indianapolis       Indiana         IN
+4  2022-07-05     POINT(24.7 72.8)       24.7      72.8                657    97929      San Jose    California         CA
+..        ...                  ...        ...       ...                ...      ...           ...           ...        ...
+95 2021-05-22   POINT(-91.5 -69.9)      -91.5     -69.9                998    37861       Detroit      Michigan         MI
+96 2023-04-03   POINT(143.1 -75.7)      143.1     -75.7                436    81644  Philadelphia  Pennsylvania         PA
+97 2021-04-08     POINT(80.9 71.2)       80.9      71.2                426    45843  Indianapolis       Indiana         IN
+98 2023-04-02      POINT(9.3 18.1)        9.3      18.1                328    61121        Dallas         Texas         TX
+99 2020-03-13     POINT(11.7 22.5)       11.7      22.5                828    80700        Denver      Colorado         CO
+print()
 
 df_joined.info()
+
+nan_rows = df_joined[df_joined.isnull().any(axis=1)] # contains only the rows (axis=1) where 'df_joined' has at least one NaN value
+nan_rows
