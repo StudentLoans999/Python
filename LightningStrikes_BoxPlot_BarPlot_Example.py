@@ -7,7 +7,7 @@
 # 7. Output (in bold) which year of those two had the least lightning strikes and the number of strikes
 # 8. Calculate total lightning strikes for each month of each year (2020-2024)
 # 9. Calculate total lightning strikes for each year (2020-2024)
-# 10. Create and plot a bar chart (use sns) of: the percentage of lightning strikes each month for each year (2020-2024)
+# 10. Create and plot a bar chart (use sns) of: the percentage of lightning strikes each month for each year (2020-2024). (Add the minimum and maximum value to the title)
 
 #pip install matplotlib
 #pip install pandas
@@ -244,23 +244,24 @@ percentage_lightning
 
 month_order = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] # defines the order of months for the bar chart
 
-# Function: Add text label to a bar plot at specified positions (x, y) 
-def add_labels(x, y, labels):
-    for i in range(len(x)): #  iterates over the number of bars in the plot
-        plt.text(i, y[i], labels[i], ha = 'center', va = 'bottom') # 'i' is index of the data point (horizontal position); 'y[i]' is value of the data point at the current index (vertical position)
-
 plt.figure(figsize = (10, 6)) # increase output size
 sns.barplot(
   data = percentage_lightning,
   x = 'month',
   y = 'percentage_lightning_per_month',
   hue = 'year',
-  order = month_order
+  order = month_order,
+  errorbar = None
 ) # creates a bar chart with data from 'percentage_lightning' df
 plt.xlabel("Month", labelpad = 20) # specifies the distance between the label and the corresponding axis
 plt.ylabel("% of lightning strikes", labelpad = 20)
 
-formatted_labels = [f"{value}%" for value in percentage_lightning['percentage_lightning_per_month']] # convert numerical values to strings and concatenate '%' to each value (so can add percent sign to the value's label)
-add_labels(percentage_lightning['month'], percentage_lightning['percentage_lightning_per_month'], formatted_labels)  # labels the percentage of lightning strikes per month on top of the bar
-plt.title("% of lightning strikes each Month (2020-2024)")
+min_value = percentage_lightning['percentage_lightning_per_month'].min() # find the minimum percentage value
+max_value = percentage_lightning['percentage_lightning_per_month'].max() # find the maximum percentage value
+min_value
+1.1 # output
+max_value
+34.6 # output
+
+plt.title(f"% of lightning strikes each Month (2020-2024)       -           Min: {min_value}%     Max: {max_value}%") # adds the min and max values to the title
 plt.show()
