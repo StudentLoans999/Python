@@ -233,3 +233,34 @@ percentage_lightning.tail()
 48    12  2022             1040            9406                            11.1
 49    12  2024             1405           10734                            13.1
 
+percentage_lightning['month'] = df['date'].dt.strftime('%B') # changes the 'month' column to be the full name of the month, instead of just the number
+percentage_lightning
+      month  year  monthly_strikes  yearly_strikes  percentage_lightning_per_month # output
+0   January  2020             2291            9915                            23.1
+1      June  2022             2067           14943                            13.8
+2  December  2023              724           10261                             7.1
+3       May  2024              699           10522                             6.6
+4      June  2022              780           14943                             5.2
+
+month_order = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] # defines the order of months for the bar chart
+
+# Function: Add text label to a bar plot at specified positions (x, y) 
+def add_labels(x, y, labels):
+    for i in range(len(x)): #  iterates over the number of bars in the plot
+        plt.text(i, y[i], labels[i], ha = 'center', va = 'bottom') # 'i' is index of the data point (horizontal position); 'y[i]' is value of the data point at the current index (vertical position)
+
+plt.figure(figsize = (10, 6)) # increase output size
+sns.barplot(
+  data = percentage_lightning,
+  x = 'month',
+  y = 'percentage_lightning_per_month',
+  hue = 'year',
+  order = month_order
+) # creates a bar chart with data from 'percentage_lightning' df
+plt.xlabel("Month", labelpad = 20) # specifies the distance between the label and the corresponding axis
+plt.ylabel("% of lightning strikes", labelpad = 20)
+
+formatted_labels = [f"{value}%" for value in percentage_lightning['percentage_lightning_per_month']] # convert numerical values to strings and concatenate '%' to each value (so can add percent sign to the value's label)
+add_labels(percentage_lightning['month'], percentage_lightning['percentage_lightning_per_month'], formatted_labels)  # labels the percentage of lightning strikes per month on top of the bar
+plt.title("% of lightning strikes each Month (2020-2024)")
+plt.show()
