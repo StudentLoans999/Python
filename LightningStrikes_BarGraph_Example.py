@@ -139,7 +139,7 @@ p = sns.barplot(
     x = 'quarter_number',
     y = 'lightning_strikes',
     hue = 'year',
-    color = "purple"
+    palette = 'dark:purple'
 )
 
 # Iterate over each bar in the plot and annotate: height is above the top of the bar; width is centered
