@@ -2,9 +2,10 @@
 # 2. Make the df have columns for geographic data: center_point, longitude, latitude
 # 3. Make another df that has the same date data to represent lightning strikes occurring but with these other columns: zip code, city, state, state code
 # 4. Create a new df by merging the two dataframes together on columns 'date' and 'lightning_strikes'
-# 5. Add in some null data to the new df to the columns 'longitude' and 'latitude' but both columns can't have a missing value in the same row
+# 5. Add in some null data to the new df to the columns 'longitude' and 'latitude' in randomly selected rows but make sure both columns don't have a missing value in the same row
 # 6. Output the rows that contain missing values
 # 7. Fill in the missing values by using the 'center_point_geom' column
+# 8. Output the fully updated and fixed df that now doesn't have any missing values (verify that there aren't any missing values left)
 
 # 3. Create a function to efficiently add a text label to a bar plot at specified positions (x, y), which will be implemented in bar charts later
 # 4. Create and plot a bar chart of: weekly strike totals in 2020
@@ -176,31 +177,33 @@ print()
 df_joined.shape
 (100, 9) # output
 
-# Set some random entries in random rows to NaN in 'df_joined' (to create Null values)
-num_null_rows = np.random.randint(1, min(len(df_joined.index) + 1, len(df_joined.columns) + 1)) # number of null values to introduce ; ensures num_null_rows is not greater than the number of rows nor columns, but is affecting at least 1 row
+# Set some random entries to NaN in a random subset of rows in 'df_joined' for either longitude or latitude columns, but not both
+num_null_rows = np.random.randint(1, len(df_joined) + 1) # random number of rows to set NaN values to (1-number of rows); determines how many rows to select
 
-# Randomly choose between 'longitude' and 'latitude' columns for each null value, but only chooses either or per entry
-for _ in range(num_null_rows): # iterates 'num_null_rows' times
-    row_idx = np.random.choice(df_joined.index) # choose a random row index
-    col_to_nullify = np.random.choice(['longitude', 'latitude']) # randomly choose between these two columns to set to NaN (but not both at the same time)
-    df_joined.loc[row_idx, col_to_nullify] = np.nan # set the selected entry (location) to NaN
+rows_to_nullify = np.random.choice(df_joined.index, num_null_rows, replace=False) # randomly selects which rows to introduce NaN values to, based on the subset of row indices that was determined by 'num_null_rows' ; determines which rows to select
+
+# Set NaN values in selected rows for either longitude or latitude columns
+for idx in rows_to_nullify: # iterate over each selected row index
+    col_to_nullify = np.random.choice(['longitude', 'latitude']) # for each selected row, randomly choose to nullify either 'longitude' or 'latitude' (only one per row) 
+    df_joined.loc[idx, col_to_nullify] = np.nan # gets the row and column location and sets that entry to NaN
 
 df_joined
-         date    center_point_geom  longitude  latitude  lightning_strikes zip_code           city           state state_code # output
-0  2022-12-10     POINT(34.8 40.2)       34.8      40.2                392    98434        El Paso           Texas         TX
-1  2024-04-29     POINT(34.5 37.9)       34.5      37.9                891    82791         Denver        Colorado         CO
-2  2022-04-22   POINT(-77.0 -59.2)      -77.0     -59.2                144    84858         Denver        Colorado         CO
-3  2023-12-20  POINT(-146.4 -22.5)     -146.4     -22.5                913    73586        Phoenix         Arizona         AZ
-4  2020-11-26    POINT(-63.2 38.6)      -63.2      38.6                868    00127      Nashville       Tennessee         TN
-..        ...                  ...        ...       ...                ...      ...            ...             ...        ...
-95 2023-11-05     POINT(74.4 40.8)       74.4      40.8                501    44870   Indianapolis         Indiana         IN
-96 2023-07-02    POINT(-44.2 -2.9)      -44.2       NaN                350    80404  Oklahoma City        Oklahoma         OK
-97 2021-10-06  POINT(-135.1 -51.0)     -135.1     -51.0                811    01734       Columbus            Ohio         OH
-98 2022-06-07   POINT(-45.0 -56.2)      -45.0     -56.2                535    35465      Charlotte  North Carolina         NC
-99 2021-03-24   POINT(-14.4 -59.2)      -14.4     -59.2                957    60530      Las Vegas          Nevada         NV
+         date   center_point_geom  longitude  latitude  lightning_strikes zip_code           city                 state state_code # output
+0  2020-09-14   POINT(-46.4 48.4)      -46.4      48.4                751    45392      San Diego            California         CA
+1  2020-12-21   POINT(124.6 54.4)      124.6      54.4                714    62679     Washington  District of Columbia         DC
+2  2022-05-08  POINT(-90.9 -51.2)      -90.9     -51.2                172    94726      Nashville             Tennessee         TN
+3  2023-01-14  POINT(-174.8 -8.0)     -174.8       NaN                918    06698        Phoenix               Arizona         AZ
+4  2024-09-21   POINT(-89.0 81.8)      -89.0       NaN                149    09015  Oklahoma City              Oklahoma         OK
+..        ...                 ...        ...       ...                ...      ...            ...                   ...        ...
+95 2024-09-18    POINT(10.5 -7.1)       10.5       NaN                406    55574        Memphis             Tennessee         TN
+96 2023-02-08  POINT(167.8 -36.7)      167.8     -36.7                693    91055      Baltimore              Maryland         MD
+97 2020-09-04   POINT(-88.4 56.4)        NaN      56.4                706    09433         Denver              Colorado         CO
+98 2021-11-02  POINT(-68.9 -58.2)      -68.9     -58.2                747    56863     Louisville              Kentucky         KY
+99 2024-10-17  POINT(-162.6 57.3)     -162.6      57.3                503    95142         Boston         Massachusetts         MA
 print()
 
 df_joined.info()
+
 <class 'pandas.core.frame.DataFrame'> # output
 RangeIndex: 100 entries, 0 to 99
 Data columns (total 9 columns):
@@ -208,8 +211,8 @@ Data columns (total 9 columns):
 ---  ------             --------------  -----
  0   date               100 non-null    datetime64[ns]
  1   center_point_geom  100 non-null    object
- 2   longitude          96 non-null     float64
- 3   latitude           98 non-null     float64
+ 2   longitude          88 non-null     float64
+ 3   latitude           87 non-null     float64
  4   lightning_strikes  100 non-null    int32
  5   zip_code           100 non-null    object
  6   city               100 non-null    object
@@ -219,12 +222,83 @@ dtypes: datetime64[ns](1), float64(2), int32(1), object(5)
 memory usage: 6.8+ KB
 None
 
-nan_rows = df_joined[df_joined.isnull().any(axis=1)] # contains only the rows (axis=1) where 'df_joined' has at least one NaN value
-nan_rows
-         date    center_point_geom  longitude  latitude  lightning_strikes zip_code           city                 state state_code # output
-8  2020-12-07  POINT(-110.6 -48.2)        NaN     -48.2                150    07346     Washington  District of Columbia         DC
-29 2021-08-18    POINT(-98.2 31.5)      -98.2       NaN                228    27887     Louisville              Kentucky         KY
-36 2024-03-08     POINT(30.3 43.4)        NaN      43.4                148    20881  San Francisco            California         CA
-44 2021-07-01    POINT(-37.9 63.2)        NaN      63.2                181    64663      Charlotte        North Carolina         NC
-56 2024-12-11   POINT(-65.8 -35.0)        NaN     -35.0                116    09258         Boston         Massachusetts         MA
-96 2023-07-02    POINT(-44.2 -2.9)      -44.2       NaN                350    80404  Oklahoma City              Oklahoma         OK
+rows_with_null = df_joined[df_joined.isnull().any(axis=1)] # contains only the rows (axis=1) where 'df_joined' has at least one NaN value
+print("Here are the rows with missing values")
+print()
+rows_with_null
+
+         date    center_point_geom  longitude  latitude  lightning_strikes zip_code          city                 state state_code # output
+2  2024-05-15   POINT(108.6 -12.1)      108.6       NaN                381    95104   Albuquerque            New Mexico         NM
+7  2022-02-10   POINT(127.2 -85.1)      127.2       NaN                743    17081       El Paso                 Texas         TX
+22 2022-03-11     POINT(-1.4 89.6)        NaN      89.6                142    00169      Columbus                  Ohio         OH
+27 2020-02-08   POINT(123.2 -43.3)        NaN     -43.3                667    10467   Los Angeles            California         CA
+36 2021-09-19     POINT(48.1 53.7)       48.1       NaN                486    27512     Milwaukee             Wisconsin         WI
+37 2021-10-20    POINT(33.0 -82.2)        NaN     -82.2                699    44947       El Paso                 Texas         TX
+43 2021-09-21  POINT(-126.3 -40.4)        NaN     -40.4                518    47252     Las Vegas                Nevada         NV
+52 2021-02-01    POINT(149.4 28.3)      149.4       NaN                460    13934       Phoenix               Arizona         AZ
+54 2022-02-25    POINT(13.1 -79.8)       13.1       NaN                336    15595  Jacksonville               Florida         FL
+76 2020-08-06   POINT(-50.8 -75.9)      -50.8       NaN                122    76380       Houston                 Texas         TX
+89 2022-03-03    POINT(-10.0 22.3)      -10.0       NaN                272    04433        Dallas                 Texas         TX
+97 2024-01-28    POINT(70.0 -29.3)        NaN     -29.3                506    55342    Washington  District of Columbia         DC
+
+print()
+
+# Define a function to extract longitude and latitude values
+def extract_lon_lat(geom_string):
+    lon_lat = geom_string.split('(')[1].split(')')[0].split()
+    return float(lon_lat[0]), float(lon_lat[1])
+
+# Extract longitude and latitude values from 'center_point_geom' column for rows with NaN values
+extracted_values = rows_with_null['center_point_geom'].apply(lambda geom: pd.Series(extract_lon_lat(geom)))
+
+# Assign the extracted values back to the original DataFrame using correct index alignment
+df_joined.loc[rows_with_null.index, ['longitude', 'latitude']] = extracted_values.values
+
+# Display the updated DataFrame info
+print("Missing values should now be filled in after extracting them from 'center_point_geom'")
+print("Let's verify that... ")
+print()
+print(df_joined.info())
+
+<class 'pandas.core.frame.DataFrame'> # output
+RangeIndex: 100 entries, 0 to 99
+Data columns (total 9 columns):
+ #   Column             Non-Null Count  Dtype
+---  ------             --------------  -----
+ 0   date               100 non-null    datetime64[ns]
+ 1   center_point_geom  100 non-null    object
+ 2   longitude          100 non-null    float64
+ 3   latitude           100 non-null    float64
+ 4   lightning_strikes  100 non-null    int32
+ 5   zip_code           100 non-null    object
+ 6   city               100 non-null    object
+ 7   state              100 non-null    object
+ 8   state_code         100 non-null    object
+dtypes: datetime64[ns](1), float64(2), int32(1), object(5)
+memory usage: 6.8+ KB
+None
+
+print()
+
+# Check if there are any NaN values in the df
+if df_joined.isnull().values.any():
+    print("There are missing values in the DataFrame and something went wrong!!!")
+else:
+    print("There are no missing values in the DataFrame, so here is what it now looks like:")
+    print()
+  
+    df_final = df_joined
+    df_final
+
+         date   center_point_geom  longitude  latitude  lightning_strikes zip_code          city         state state_code # output
+0  2023-02-09    POINT(29.1 38.2)       29.1      38.2                685    72672       Houston         Texas         TX
+1  2024-05-17  POINT(-152.2 52.1)     -152.2      52.1                911    34043        Austin         Texas         TX
+2  2021-01-25   POINT(125.1 19.4)      125.1      19.4                381    02582        Austin         Texas         TX
+3  2024-05-19    POINT(85.4 31.8)       85.4      31.8                484    55318     Baltimore      Maryland         MD
+4  2024-10-17   POINT(101.4 44.0)      101.4      44.0                451    88686     Nashville     Tennessee         TN
+..        ...                 ...        ...       ...                ...      ...           ...           ...        ...
+95 2020-10-19  POINT(152.1 -46.3)      152.1     -46.3                677    68037    Louisville      Kentucky         KY
+96 2020-10-30  POINT(121.4 -90.0)      121.4     -90.0                119    86339       Phoenix       Arizona         AZ
+97 2023-04-20  POINT(-70.3 -87.6)      -70.3     -87.6                604    48628     Nashville     Tennessee         TN
+98 2023-07-26  POINT(106.2 -33.2)      106.2     -33.2                925    03531  Philadelphia  Pennsylvania         PA
+99 2022-10-06    POINT(6.2 -29.9)        6.2     -29.9                482    81939   Los Angeles    California         CA
