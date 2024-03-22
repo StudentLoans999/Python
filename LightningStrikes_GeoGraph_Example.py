@@ -6,7 +6,7 @@
 # 6. Output the rows that contain missing values
 # 7. Fill in the missing values by using the 'center_point_geom' column
 # 8. Output the fully updated and fixed df that now doesn't have any missing values (verify that there aren't any missing values left)
-# 9. Create and plot a bar chart (use sns and annotate each bar in the plot) of: yearly strike totals per quarter in 2020-2024
+# 9. Create and plot a geo graph (use plotly and annotate each data point in the plot) of: Lightning strikes per year (2020-2024) by City in the USA
 
 #pip install matplotlib
 #pip install pandas
@@ -302,4 +302,20 @@ else:
 98 2023-07-26  POINT(106.2 -33.2)      106.2     -33.2                925    03531  Philadelphia  Pennsylvania         PA
 99 2022-10-06    POINT(6.2 -29.9)        6.2     -29.9                482    81939   Los Angeles    California         CA
 
-fig = px
+# Creates a new column 'city_state_year' that combines 'city', 'state', and year information (to provide more info on the annotation on each data point)
+df_final['city_state_year'] = df_final['city'] + ', ' + df_final['state'] + ' (' + df_final['date'].dt.year.astype(str) + ')' # format: City, State (YYYY)
+
+# Create and plot the df data on the USA map
+fig = px.scatter_geo(df_final, # data to use
+                     locationmode='USA-states',
+                     locations='state_code', # where the data points are
+                     size="lightning_strikes",
+                     hover_name="city_state_year",
+                     color="lightning_strikes",
+                     scope="usa"
+)
+fig.update_layout(
+    title = "Lightning Strikes in the USA by City"
+)
+
+fig.show()
