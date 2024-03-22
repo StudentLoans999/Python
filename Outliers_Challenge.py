@@ -8,6 +8,10 @@
 # 8. Merge the original df with the df composed entirely of outliers
 # 9. Output the new minimum and maximum lightning strikes value
 # 10. Create and plot a box plot (use sns) showing the original df and with outliers pointed out (use a legend): Lightning strikes per year (1900-2024)
+# 11. Output the 25th amd 75th percentile of annual strikes and the interquartile range, and the upper and lower limits
+# 12. Delete any outliers that fall out of either the upper or lower range
+# 13. Replace any outliers that fall out of the tenth_percentile or ninetieth_percentile to eitehr of those percentiles #
+# 14. Reassign any outliers to be the median or mean value (show both but comment out the mean logic) 
 
 #pip install matplotlib
 #pip install pandas
@@ -18,7 +22,7 @@ import pandas as pd
 import seaborn as sns
 import numpy as np
 import datetime
-from matplotlib.lines import Line2D  # Import Line2D from matplotlib.lines
+from matplotlib.lines import Line2D
 
 # Creates a df filled with daily dates ranging from years 2020-2024 and assign random values for each date to represent lightning strikes occurring, along with other columns
 dates = pd.date_range(start='2000-01-01', end='2024-12-31', freq='Y') # create a range of dates from 2000-01-01 to 2024-12-31 ; generated on a yearly frequency (only one date per year in the range will be included)
@@ -187,6 +191,10 @@ lightning_strikes_max = readable_numbers(np.max(df_with_outliers['lightning_stri
 print("Here are the new Min and Max values:")
 print(f"Min: {lightning_strikes_min}")
 print(f"Max: {lightning_strikes_max}")
+Here are the new Min and Max values: # output
+Min: 0K
+Max: 100.0M
+
 print()
 
 # Create and plot a box plot with all the data and then overlay the outliers to it #
@@ -217,3 +225,96 @@ g.set_xticks(ticks) # ensures that the ticks remain at the same positions
 g.set_xticklabels([readable_numbers(x) for x in ticks]) # makes each tick position 'x' more readable (M)
 
 plt.show()
+# #
+
+
+percentile25 = df_with_outliers['lightning_strikes'].quantile(0.25) # calculate 25th percentile of annual strikes
+percentile75 = df['lightning_strikes'].quantile(0.75) # calculate 75th percentile of annual strikes
+
+iqr = percentile75 - percentile25 # calculate interquartile range
+
+upper_limit = percentile75 + 1.5 * iqr # calculate upper and lower thresholds for outliers
+lower_limit = percentile25 - 1.5 * iqr
+print('25th percentile of annual strikes is: ', readable_numbers(percentile25))
+print('75th percentile of annual strikes is: ', readable_numbers(percentile75))
+print('Interquartile range is: ', readable_numbers(iqr))
+print('Upper limit is: ', readable_numbers(upper_limit))
+print('Lower limit is: ', readable_numbers(lower_limit))
+25th percentile of annual strikes is: 7.5M # output
+75th percentile of annual strikes is: 33.6M
+Interquartile range is:  26.1M
+Upper limit is:  72.8M
+Lower limit is:  -31634K
+# Delete any outliers that fall out of either the upper or lower range #
+mask = (df_with_outliers['lightning_strikes'] >= lower_limit) & (df_with_outliers['lightning_strikes'] <= upper_limit)
+
+mask = mask.reindex(df_with_outliers.index) # ensure that 'mask' has the same index as 'df_with_outliers'
+df_with_outliers_removed = df_with_outliers[mask].copy()
+df_with_outliers_removed
+                    year  lightning_strikes lightning_strikes_formatted # output
+0    2020-12-31 00:00:00           44560188                       44.6M
+1    1980-12-31 00:00:00           35696891                       35.7M
+2    1920-12-31 00:00:00           45239799                       45.2M
+3    1975-12-31 00:00:00           32304632                       32.3M
+4    1939-12-31 00:00:00            3044779                        3.0M
+..                   ...                ...                         ...
+107                 1919           50000000                         NaN
+108                 1904           49999000                         NaN
+109                 1987                500                         NaN
+110                 2004           49999900                         NaN
+111                 1992                 10                         NaN
+
+# #
+
+
+# Replace any outliers that fall out of the tenth_percentile or ninetieth_percentile to eitehr of those percentiles #
+tenth_percentile = np.percentile(df_with_outliers['lightning_strikes'], 10) # calculate 10th percentile
+ninetieth_percentile = np.percentile(df_with_outliers['lightning_strikes'], 90) # calculate 90th percentile
+
+# Apply lambda function to replace outliers with thresholds defined above
+df_with_outliers['lightning_strikes'] = df_with_outliers['lightning_strikes'].apply(lambda x: (
+    tenth_percentile if x < tenth_percentile # set x to tenth_percentile if it is less than tenth_percentile
+    else ninetieth_percentile if x > ninetieth_percentile # set x to ninetieth_percentile if it is more than ninetieth_percentile
+    else x)) # set x to x if it falls within the percentiles (think of them as walls)
+
+df_with_outliers['lightning_strikes']
+0      44560188.0 # output
+1      35696891.0
+2      45239799.0
+3      32304632.0
+4       3044779.0
+          ...
+107    47258765.6
+108    47258765.6
+109      953084.2
+110    47258765.6
+111      953084.2
+Name: lightning_strikes, Length: 112, dtype: float64
+
+print()                 
+# #
+
+
+# Calculate the median and then impute it for all outliers that fall out of either the upper or lower range #
+median = np.median(df_with_outliers['lightning_strikes'][(df_with_outliers['lightning_strikes'] >= lower_limit) & (df_with_outliers['lightning_strikes'] <= upper_limit)]) # calculates the median based on non-outlier values only (values that fall within the lower and upper limits)
+df_with_outliers['lightning_strikes'] = np.where(df_with_outliers['lightning_strikes'] < lower_limit, median, df_with_outliers['lightning_strikes']) # impute the median for all values < lower_limit
+df_with_outliers['lightning_strikes'] = np.where(df_with_outliers['lightning_strikes'] > upper_limit, median, df_with_outliers['lightning_strikes']) # impute the median for all values > upper_limit
+df_with_outliers['lightning_strikes']
+0       1213451.8 # output
+1      32963531.0
+2      33849901.0
+3      18152930.0
+4       3718059.0
+          ...
+107     1213451.8
+108     1213451.8
+109     1213451.8
+110     1213451.8
+111    46048771.4
+Name: lightning_strikes, Length: 112, dtype: float64
+
+# Calculate the mean and then impute it for all outliers that fall out of either the upper or lower range
+mean = np.mean(df_with_outliers['lightning_strikes'][(df_with_outliers['lightning_strikes'] >= lower_limit) & (df_with_outliers['lightning_strikes'] <= upper_limit)]) # calculates the mean based on non-outlier values only (values that fall within the lower and upper limits)
+df_with_outliers['lightning_strikes'] = np.where(df_with_outliers['lightning_strikes'] < lower_limit, mean, df_with_outliers['lightning_strikes']) # impute the mean for all values < lower_limit
+df_with_outliers['lightning_strikes'] = np.where(df_with_outliers['lightning_strikes'] > upper_limit, mean, df_with_outliers['lightning_strikes']) # impute the mean for all values > upper_limit
+#df_with_outliers['lightning_strikes'] # uncomment this line if you want to see the output
