@@ -2,7 +2,9 @@
 # 2. Make the df have columns for geographic data: center_point, longitude, latitude
 # 3. Make another df that has the same date data to represent lightning strikes occurring but with these other columns: zip code, city, state, state code
 # 4. Create a new df by merging the two dataframes together on columns 'date' and 'lightning_strikes'
-# 5. Add in some null data to the new df
+# 5. Add in some null data to the new df to the columns 'longitude' and 'latitude' but both columns can't have a missing value in the same row
+# 6. Output the rows that contain missing values
+# 7. Fill in the missing values by using the 'center_point_geom' column
 
 # 3. Create a function to efficiently add a text label to a bar plot at specified positions (x, y), which will be implemented in bar charts later
 # 4. Create and plot a bar chart of: weekly strike totals in 2020
@@ -184,21 +186,45 @@ for _ in range(num_null_rows): # iterates 'num_null_rows' times
     df_joined.loc[row_idx, col_to_nullify] = np.nan # set the selected entry (location) to NaN
 
 df_joined
-date    center_point_geom  longitude  latitude  lightning_strikes zip_code          city         state state_code # output
-0  2020-01-04  POINT(-142.6 -11.0)     -142.6     -11.0                179    00892      Columbus          Ohio         OH
-1  2020-11-13    POINT(-9.9 -75.5)       -9.9     -75.5                330    13560    Louisville      Kentucky         KY
-2  2023-12-20   POINT(150.7 -46.9)      150.7     -46.9                649    05448      Columbus          Ohio         OH
-3  2023-06-29    POINT(64.2 -88.6)       64.2     -88.6                408    37871  Indianapolis       Indiana         IN
-4  2022-07-05     POINT(24.7 72.8)       24.7      72.8                657    97929      San Jose    California         CA
-..        ...                  ...        ...       ...                ...      ...           ...           ...        ...
-95 2021-05-22   POINT(-91.5 -69.9)      -91.5     -69.9                998    37861       Detroit      Michigan         MI
-96 2023-04-03   POINT(143.1 -75.7)      143.1     -75.7                436    81644  Philadelphia  Pennsylvania         PA
-97 2021-04-08     POINT(80.9 71.2)       80.9      71.2                426    45843  Indianapolis       Indiana         IN
-98 2023-04-02      POINT(9.3 18.1)        9.3      18.1                328    61121        Dallas         Texas         TX
-99 2020-03-13     POINT(11.7 22.5)       11.7      22.5                828    80700        Denver      Colorado         CO
+         date    center_point_geom  longitude  latitude  lightning_strikes zip_code           city           state state_code # output
+0  2022-12-10     POINT(34.8 40.2)       34.8      40.2                392    98434        El Paso           Texas         TX
+1  2024-04-29     POINT(34.5 37.9)       34.5      37.9                891    82791         Denver        Colorado         CO
+2  2022-04-22   POINT(-77.0 -59.2)      -77.0     -59.2                144    84858         Denver        Colorado         CO
+3  2023-12-20  POINT(-146.4 -22.5)     -146.4     -22.5                913    73586        Phoenix         Arizona         AZ
+4  2020-11-26    POINT(-63.2 38.6)      -63.2      38.6                868    00127      Nashville       Tennessee         TN
+..        ...                  ...        ...       ...                ...      ...            ...             ...        ...
+95 2023-11-05     POINT(74.4 40.8)       74.4      40.8                501    44870   Indianapolis         Indiana         IN
+96 2023-07-02    POINT(-44.2 -2.9)      -44.2       NaN                350    80404  Oklahoma City        Oklahoma         OK
+97 2021-10-06  POINT(-135.1 -51.0)     -135.1     -51.0                811    01734       Columbus            Ohio         OH
+98 2022-06-07   POINT(-45.0 -56.2)      -45.0     -56.2                535    35465      Charlotte  North Carolina         NC
+99 2021-03-24   POINT(-14.4 -59.2)      -14.4     -59.2                957    60530      Las Vegas          Nevada         NV
 print()
 
 df_joined.info()
+<class 'pandas.core.frame.DataFrame'> # output
+RangeIndex: 100 entries, 0 to 99
+Data columns (total 9 columns):
+ #   Column             Non-Null Count  Dtype
+---  ------             --------------  -----
+ 0   date               100 non-null    datetime64[ns]
+ 1   center_point_geom  100 non-null    object
+ 2   longitude          96 non-null     float64
+ 3   latitude           98 non-null     float64
+ 4   lightning_strikes  100 non-null    int32
+ 5   zip_code           100 non-null    object
+ 6   city               100 non-null    object
+ 7   state              100 non-null    object
+ 8   state_code         100 non-null    object
+dtypes: datetime64[ns](1), float64(2), int32(1), object(5)
+memory usage: 6.8+ KB
+None
 
 nan_rows = df_joined[df_joined.isnull().any(axis=1)] # contains only the rows (axis=1) where 'df_joined' has at least one NaN value
 nan_rows
+         date    center_point_geom  longitude  latitude  lightning_strikes zip_code           city                 state state_code # output
+8  2020-12-07  POINT(-110.6 -48.2)        NaN     -48.2                150    07346     Washington  District of Columbia         DC
+29 2021-08-18    POINT(-98.2 31.5)      -98.2       NaN                228    27887     Louisville              Kentucky         KY
+36 2024-03-08     POINT(30.3 43.4)        NaN      43.4                148    20881  San Francisco            California         CA
+44 2021-07-01    POINT(-37.9 63.2)        NaN      63.2                181    64663      Charlotte        North Carolina         NC
+56 2024-12-11   POINT(-65.8 -35.0)        NaN     -35.0                116    09258         Boston         Massachusetts         MA
+96 2023-07-02    POINT(-44.2 -2.9)      -44.2       NaN                350    80404  Oklahoma City              Oklahoma         OK
