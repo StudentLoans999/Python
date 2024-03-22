@@ -244,6 +244,7 @@ print()
 
 # Define a function to extract longitude and latitude values
 def extract_lon_lat(geom_string):
+  """ Extracts out a longitude value and a latitude value from the given data """
     lon_lat = geom_string.split('(')[1].split(')')[0].split()
     return float(lon_lat[0]), float(lon_lat[1])
 
