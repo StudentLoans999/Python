@@ -315,7 +315,8 @@ fig = px.scatter_geo(df_final, # data to use
                      scope="usa"
 )
 fig.update_layout(
-    title = "Lightning Strikes in the USA by City"
+    title = "Lightning Strikes in the USA by City",
+    coloraxis_colorbar=dict(title='Number of Lightning Strikes') # change the colorbar's title from 'lightning_strikes' to a better title
 )
 
 fig.show()
