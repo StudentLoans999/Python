@@ -12,10 +12,9 @@
 #pip install pandas
 #pip install seaborn
 #pip install datetime
-#pip install plotly
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 import numpy as np
 import datetime
-import plotly.express as px
+
