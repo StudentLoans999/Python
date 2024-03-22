@@ -76,6 +76,8 @@ print(f"Median: {lightning_strikes_median}")
 Mean: 25.2M # output
 Median: 27.0M
 
+print()
+
 # Create and plot a boxplot (with outliers shown)
 box = sns.boxplot(x=df['lightning_strikes'], showfliers=True)
 g = plt.gca()
@@ -84,4 +86,69 @@ g.set_xticks(ticks)
 g.set_xticklabels([readable_numbers(x) for x in ticks])
 plt.xlabel('Number of strikes')
 plt.title('Yearly number of lightning strikes (1900-2024)')
+plt.show()
+
+# Gets the min and max values of the column 'lightning_strikes'
+print("There don't seem to be any outliers present, so let's look at the Min and Max values and go from there")
+print()
+lightning_strikes_min = readable_numbers(np.min(df['lightning_strikes']))
+lightning_strikes_max = readable_numbers(np.max(df['lightning_strikes']))
+print(f"Min: {lightning_strikes_min}")
+print(f"Max: {lightning_strikes_max}")
+Min: 828K # output
+Max: 49.6M
+
+print()
+
+# Generate 12 random years and 12 lightning strike values for outliers (one guranteed low at '1' and one guranteed high at '1M', and 10 random ones)
+print("Let's add a low outlier (0), a high outlier (100M), and 10 random outliers")
+print()
+random_years_low_high = np.random.choice(dates, size=2) # generate random years for the lowest and highest outliers
+random_years_10 = np.random.choice(dates, size=10) # generate random years for 10 outliers
+random_strike_lowest = 0
+random_strike_highest = 100000000 # 100 M
+random_strike_10 = np.random.choice([1, 10, 50, 100, 500, 999, 50000000, 49999900, 49999000, 49998500], size=10)
+
+outliers = pd.DataFrame({'year': np.concatenate((random_years_low_high, random_years_10)), # create a df for the 12 outliers
+                         'lightning_strikes': [random_strike_lowest, random_strike_highest] + list(random_strike_10)})
+
+print("Here are the outliers created:")
+print()
+outliers
+         year  lightning_strikes # output
+0  2009-12-31                  0
+1  1970-12-31          100000000
+2  1957-12-31                999
+3  1929-12-31                100
+4  1990-12-31           49999900
+5  2007-12-31                999
+6  1918-12-31                 50
+7  1929-12-31                 50
+8  2022-12-31                500
+9  1910-12-31                500
+10 1990-12-31                 50
+11 1904-12-31                999
+
+print()
+
+df_with_outliers = pd.concat([df, outliers], ignore_index=True) # appends 'outliers' df to the original df 'df'
+
+lightning_strikes_min = readable_numbers(np.min(df_with_outliers['lightning_strikes']))
+lightning_strikes_max = readable_numbers(np.max(df_with_outliers['lightning_strikes']))
+print("Here are the new Min and Max values:")
+print(f"Min: {lightning_strikes_min}")
+print(f"Max: {lightning_strikes_max}")
+Min: 0K # output
+Max: 100.0M
+
+print()
+
+# Create and plot a boxplot that has guaranteed outliers
+box_outliers = sns.boxplot(x=df_with_outliers['lightning_strikes'], showfliers=True)
+g = plt.gca()
+ticks = g.get_xticks()
+g.set_xticks(ticks)
+g.set_xticklabels([readable_numbers(x) for x in ticks])
+plt.xlabel('Number of strikes')
+plt.title('Yearly number of lightning strikes [with outliers] (1900-2024)')
 plt.show()
