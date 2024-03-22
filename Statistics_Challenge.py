@@ -14,6 +14,7 @@ iris_data.head() # see what the data looks like
 
 # Calculates the mean 'sepalwidth' for each 'species' in the dataset and returns a list containing the species name (encoded as bytes) and its corresponding mean sepal width
 def get_grouped_mean():
+    """ groups by 'species' and 'sepalwidth' and returns the mean sepalwidth values """
     grouped_mean_sepalwidth = iris_data.groupby(['species'])['sepalwidth'].mean() # results is a Series object where the index contains the species names and the values contain the mean sepal widths
   
     result = [] # initializes an empty list which will store the species name and its mean sepal width in the desired format
