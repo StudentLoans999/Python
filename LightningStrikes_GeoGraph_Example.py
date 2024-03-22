@@ -6,23 +6,21 @@
 # 6. Output the rows that contain missing values
 # 7. Fill in the missing values by using the 'center_point_geom' column
 # 8. Output the fully updated and fixed df that now doesn't have any missing values (verify that there aren't any missing values left)
-
-# 3. Create a function to efficiently add a text label to a bar plot at specified positions (x, y), which will be implemented in bar charts later
-# 4. Create and plot a bar chart of: weekly strike totals in 2020
-# 5. Create and plot a bar chart of: quarterly strike totals in 2021-2022
-# 6. Create and plot a bar chart (use sns and annotate each bar in the plot) of: yearly strike totals per quarter in 2020-2024
+# 9. Create and plot a bar chart (use sns and annotate each bar in the plot) of: yearly strike totals per quarter in 2020-2024
 
 #pip install matplotlib
 #pip install pandas
 #pip install seaborn
 #pip install datetime
+#pip install plotly
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 import numpy as np
 import datetime
+import plotly.express as px
 
-# 
+# Creates a df filled with daily dates ranging from years 2020-2024 and assign random values for each date to represent lightning strikes occurring, along with other columns
 dates = pd.date_range(start='2020-01-01', end='2024-12-31', freq='D') # create a range of dates from 2020-01-01 to 2024-12-31 ; generated on a daily frequency (each date in the range will be included)
 
 sample_dates = np.random.choice(dates, size=100, replace=False) # randomly sample 100 unique dates from the 'dates' range
@@ -35,6 +33,7 @@ df = pd.DataFrame({'date': sample_dates, # create a DataFrame with 'sample_dates
                    'longitude': longitude,
                    'latitude': latitude,
                    'lightning_strikes': lightning_values})
+
 # Calculate the average latitude and longitude to get the center point (with the format - POINT(longitude latitude) and then add it as a new column called 'center_point_geom'
 df['center_point_geom'] = df.apply(lambda row: f"POINT({row['longitude']} {row['latitude']})", axis=1)
 
@@ -280,7 +279,7 @@ None
 
 print()
 
-# Check if there are any NaN values in the df
+# Check if there are any NaN values left in the df
 if df_joined.isnull().values.any():
     print("There are missing values in the DataFrame and something went wrong!!!")
 else:
@@ -302,3 +301,5 @@ else:
 97 2023-04-20  POINT(-70.3 -87.6)      -70.3     -87.6                604    48628     Nashville     Tennessee         TN
 98 2023-07-26  POINT(106.2 -33.2)      106.2     -33.2                925    03531  Philadelphia  Pennsylvania         PA
 99 2022-10-06    POINT(6.2 -29.9)        6.2     -29.9                482    81939   Los Angeles    California         CA
+
+fig = px
