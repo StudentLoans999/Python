@@ -1,16 +1,13 @@
 # TASK: 1. Create a df filled with yearly dates ranging from years 1900-2024 and assign random values for each date to represent lightning strikes occurring
 # 2. Add in a new column to the df that makes the number of lightning strikes more readable (since they are over 1 million per year)
 # 3. Output the total mean and median of the lightning strikes
-# 4. Create and plot a box plot (use sns and annotate each ) of: Lightning strikes per year (1900-2024)
-
-
-# 3. Make another df that has the same date data to represent lightning strikes occurring but with these other columns: zip code, city, state, state code
-# 4. Create a new df by merging the two dataframes together on columns 'date' and 'lightning_strikes'
-# 5. Add in some null data to the new df to the columns 'longitude' and 'latitude' in randomly selected rows but make sure both columns don't have a missing value in the same row
-# 6. Output the rows that contain missing values
-# 7. Fill in the missing values by using the 'center_point_geom' column
-# 8. Output the fully updated and fixed df that now doesn't have any missing values (verify that there aren't any missing values left)
-# 9. Create and plot a geo graph (use plotly and annotate each data point in the plot) of: Lightning strikes per year (2020-2024) by City in the USA
+# 4. Create and plot a box plot (use sns) of: Lightning strikes per year (1900-2024)
+# 5. Outliers aren't clear to see? Output the minimum and maximum lightning strikes value
+# 6. Create 12 outliers for 12 random: one outlier is defined as having 0 lightning strikes, another is defined as having 100M, and then the other 10 are a random mix of low and high outliers 
+# 7. Create and plot two bar charts (one for the low outliers and the other for high) (side-by-side) with the years sorted ascending (use plt and annotate each bar with the lightning value): Lightning strikes per year
+# 8. Merge the original df with the df composed entirely of outliers
+# 9. Output the new minimum and maximum lightning strikes value
+# 10. Create and plot a box plot (use sns) showing the original df and with outliers pointed out (use a legend): Lightning strikes per year (1900-2024)
 
 #pip install matplotlib
 #pip install pandas
@@ -21,6 +18,7 @@ import pandas as pd
 import seaborn as sns
 import numpy as np
 import datetime
+from matplotlib.lines import Line2D  # Import Line2D from matplotlib.lines
 
 # Creates a df filled with daily dates ranging from years 2020-2024 and assign random values for each date to represent lightning strikes occurring, along with other columns
 dates = pd.date_range(start='2000-01-01', end='2024-12-31', freq='Y') # create a range of dates from 2000-01-01 to 2024-12-31 ; generated on a yearly frequency (only one date per year in the range will be included)
@@ -131,24 +129,92 @@ outliers
 
 print()
 
-df_with_outliers = pd.concat([df, outliers], ignore_index=True) # appends 'outliers' df to the original df 'df'
+# Create and plot two bar charts side-by-side: one for low outliers and the other for high #
 
+outliers_df['year'] = outliers_df['year'].dt.strftime('%Y') # convert years to strings for plotting
+outliers_df_sorted = outliers_df.sort_values(by = 'year', ascending = True) # sorts the years in ascending order
+
+low_outliers = outliers_df_sorted[outliers_df_sorted['lightning_strikes'] < 1000]  # filter the low outliers
+high_outliers = outliers_df_sorted[outliers_df_sorted['lightning_strikes'] >= 1000]  # filter the high outliers
+
+low_outliers.reset_index(drop=True, inplace=True) # reset indicies of the low outliers
+high_outliers.reset_index(drop=True, inplace=True) # reset indicies of the high outliers
+
+# Function: Add text label to a bar plot at specified positions (x, y) for a given ax object
+def add_labels_two_bars(ax, x, y, labels, format_labels=False):
+    for i in range(len(x)):  # Iterate over the number of bars in the plot
+        if format_labels: # if when function is called, it format_labels=True ; to be used for high outliers labels 
+            formatted_label = readable_numbers(labels[i])
+        else:
+            formatted_label = labels[i]
+        ax.text(x[i], y[i], formatted_label, ha='center', va='bottom', fontsize=12)
+
+# Create subplots
+fig, axs = plt.subplots(1, 2, figsize=(15, 5)) # 1 row and 2 columns of subplots (so side-by-side plots); 'fig' is the variable that holds a reference to the created figure; 'axs' is an array with 2 elements, each representing one of the subplots
+
+# Plot low outliers as bars
+low_bars = axs[0].bar(x=np.arange(len(low_outliers['year'])), height=low_outliers['lightning_strikes'], color='blue') # ax[0] is the first subplot so is low outliers ; x-axis is 'years'; positioning of the bars is evenly spaced values from 0 to len(years) ; height of the bars is 'lightning_strikes'
+axs[0].set_title('Low Outliers')
+axs[0].set_xlabel('Year')
+axs[0].set_ylabel('Number of Lightning Strikes')
+axs[0].set_xticks(np.arange(len(low_outliers['year']))) # sets the x-axis ticks based on the number of years ; each tick will correspond to a unique year from the low outliers' data, ensuring that each year is represented on the x-axis
+axs[0].set_xticklabels(low_outliers['year'])
+
+# Plot high outliers
+high_bars = axs[1].bar(x=np.arange(len(high_outliers['year'])), height=high_outliers['lightning_strikes'], color='red') # ax[1] is the second subplot so is high outliers
+axs[1].set_title('High Outliers')
+axs[1].set_xlabel('Year')
+axs[1].set_ylabel('Number of Lightning Strikes')
+axs[1].set_xticks(np.arange(len(high_outliers['year'])))
+axs[1].set_xticklabels(high_outliers['year'])
+axs[1].set_ylim(0, 100000000) # set y-axis limit for the high outlier plot (to 100M)
+axs[1].set_yticklabels([readable_numbers(x) for x in axs[1].get_yticks()]) # format y-axis ticks using the readable_numbers function (makes them M)
+
+# Add labels to the top of each bar using the add_labels function
+add_labels_two_bars(axs[0], np.arange(len(low_outliers['year'])), low_outliers['lightning_strikes'], low_outliers['lightning_strikes']) # adds labels to lower outlier's bars, each label is a year and its corresponding 'lightning_strikes' value 
+add_labels_two_bars(axs[1], np.arange(len(high_outliers['year'])), high_outliers['lightning_strikes'], high_outliers['lightning_strikes'], format_labels=True) # makes the label in the format of having 'M'
+
+plt.tight_layout() # automatically adjusts the subplots' parameters so that the subplots fit nicely
+plt.show()
+# #
+
+
+df_with_outliers = pd.concat([df, outliers_df], ignore_index=True) # merges 'outliers' df to the original df 'df'
+
+# Gets the new min and max values of the column 'lightning_strikes'
 lightning_strikes_min = readable_numbers(np.min(df_with_outliers['lightning_strikes']))
 lightning_strikes_max = readable_numbers(np.max(df_with_outliers['lightning_strikes']))
 print("Here are the new Min and Max values:")
 print(f"Min: {lightning_strikes_min}")
 print(f"Max: {lightning_strikes_max}")
-Min: 0K # output
-Max: 100.0M
-
 print()
 
-# Create and plot a boxplot that has guaranteed outliers
-box_outliers = sns.boxplot(x=df_with_outliers['lightning_strikes'], showfliers=True)
+# Create and plot a box plot with all the data and then overlay the outliers to it #
+
+combined_plot = sns.boxplot(x=df_with_outliers['lightning_strikes']) # creates a box plot
+sns.stripplot(x=outliers_df['lightning_strikes'], color='red', jitter=True) # create a strip plot of just the outliers
+
+# Increase x-axis range for better spread 
+x_min, x_max = plt.gca().get_xlim()
+buffer = 0.2 * (x_max - x_min)  # Add 20% buffer on each side
+new_min = x_min - buffer
+new_max = x_max + buffer
+plt.xlim(new_min, new_max)
+
+plt.xlabel('Number of strikes')
+plt.title('Yearly number of lightning strikes (1900-2024)')
+
+legend_elements = [ # add legend with custom markers
+    Line2D([0], [0], color='b', lw=2, label='Data'),
+    Line2D([0], [0], marker='o', color='w', label='Outliers', markerfacecolor='red', markersize=10)
+]
+plt.legend(handles=legend_elements)
+
+# Match x-axis ticks format and range 
 g = plt.gca()
 ticks = g.get_xticks()
 g.set_xticks(ticks)
 g.set_xticklabels([readable_numbers(x) for x in ticks])
-plt.xlabel('Number of strikes')
-plt.title('Yearly number of lightning strikes [with outliers] (1900-2024)')
+
 plt.show()
+# #
