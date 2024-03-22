@@ -195,26 +195,25 @@ combined_plot = sns.boxplot(x=df_with_outliers['lightning_strikes']) # creates a
 sns.stripplot(x=outliers_df['lightning_strikes'], color='red', jitter=True) # create a strip plot of just the outliers
 
 # Increase x-axis range for better spread 
-x_min, x_max = plt.gca().get_xlim()
-buffer = 0.2 * (x_max - x_min)  # Add 20% buffer on each side
+x_min, x_max = plt.gca().get_xlim() # retrieves the current limits of the x-axis
+buffer = 0.2 * (x_max - x_min)  # calculates the buffer size, which is 20% of the range of the x-axis data
 new_min = x_min - buffer
 new_max = x_max + buffer
-plt.xlim(new_min, new_max)
+plt.xlim(new_min, new_max) # sets the new limits for the x-axis
 
 plt.xlabel('Number of strikes')
 plt.title('Yearly number of lightning strikes (1900-2024)')
 
 legend_elements = [ # add legend with custom markers
-    Line2D([0], [0], color='b', lw=2, label='Data'),
-    Line2D([0], [0], marker='o', color='w', label='Outliers', markerfacecolor='red', markersize=10)
+    Line2D([0], [0], color='b', lw=2, label='Data'), # creates a line with zero length (essentially a point) and a width of 2
+    Line2D([0], [0], marker='o', color='w', label='Outliers', markerfacecolor='red', markersize=10) # reates a line with zero length (essentially a point) represented by a circle marker
 ]
-plt.legend(handles=legend_elements)
+plt.legend(handles=legend_elements) # creates a legend with the custom markers above
 
-# Match x-axis ticks format and range 
-g = plt.gca()
-ticks = g.get_xticks()
-g.set_xticks(ticks)
-g.set_xticklabels([readable_numbers(x) for x in ticks])
+# X-axis ticks remain at their current positions while updating the tick labels to be more readable
+g = plt.gca() # gets the current axes instance from the current figure
+ticks = g.get_xticks() # retrieves the current positions of the x-axis ticks on the plot
+g.set_xticks(ticks) # ensures that the ticks remain at the same positions
+g.set_xticklabels([readable_numbers(x) for x in ticks]) # makes each tick position 'x' more readable (M)
 
 plt.show()
-# #
