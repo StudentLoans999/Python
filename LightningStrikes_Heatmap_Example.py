@@ -5,6 +5,8 @@
 # 5. Create dummy variables from strike levels ('0/False' where is absent and '1/True' where present) and add them to the df
 # 6. Create and plot a heatmap (use sns) showing monthly lightning severity over the years
 
+# Label Encoding - A data transformation technique where each data value is assigned a distinct number instead of a qualitative value EX: ['Scattered', 'Mild', 'Heavy', 'Severe'] transforms to [0, 1, 2, 3] #
+
 #pip install matplotlib
 #pip install pandas
 #pip install seaborn
